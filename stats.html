@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AMISOI Countdown Stats</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100svh;
+            margin: 0;
+            padding: 32px 18px;
+            color: #f8f5f8;
+            background: #141016;
+            font-family: "PingFang SC", "Microsoft YaHei", system-ui, -apple-system, sans-serif;
+        }
+
+        main {
+            width: min(100%, 720px);
+            margin: 0 auto;
+        }
+
+        h1 {
+            margin: 0 0 20px;
+            font-size: 28px;
+            line-height: 1.2;
+        }
+
+        label {
+            display: block;
+            margin: 16px 0 8px;
+            color: rgba(248, 245, 248, 0.72);
+            font-size: 13px;
+        }
+
+        input,
+        button {
+            width: 100%;
+            border-radius: 8px;
+            font: inherit;
+        }
+
+        input {
+            border: 1px solid rgba(248, 245, 248, 0.18);
+            padding: 12px 14px;
+            color: #f8f5f8;
+            background: rgba(248, 245, 248, 0.08);
+        }
+
+        button {
+            margin-top: 18px;
+            border: 0;
+            padding: 12px 14px;
+            color: #141016;
+            background: #f70684;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .metrics {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 12px;
+            margin: 28px 0;
+        }
+
+        .metric {
+            border: 1px solid rgba(248, 245, 248, 0.14);
+            border-radius: 8px;
+            padding: 16px;
+            background: rgba(248, 245, 248, 0.06);
+        }
+
+        .metric strong {
+            display: block;
+            margin-bottom: 8px;
+            color: rgba(248, 245, 248, 0.68);
+            font-size: 12px;
+        }
+
+        .metric span {
+            font-size: 30px;
+            font-weight: 700;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th,
+        td {
+            border-bottom: 1px solid rgba(248, 245, 248, 0.12);
+            padding: 12px 0;
+            text-align: left;
+        }
+
+        .message {
+            color: rgba(248, 245, 248, 0.68);
+            line-height: 1.6;
+        }
+
+        @media (max-width: 620px) {
+            .metrics {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+        }
+    </style>
+</head>
+<body>
+    <main>
+        <h1>AMISOI Countdown Stats</h1>
+
+        <label for="endpoint">Worker URL</label>
+        <input id="endpoint" placeholder="https://your-worker.your-subdomain.workers.dev">
+
+        <label for="token">Stats token</label>
+        <input id="token" placeholder="如果没有设置 STATS_TOKEN，可以留空">
+
+        <button type="button" id="refresh">Refresh stats</button>
+
+        <section class="metrics" aria-label="Stats summary">
+            <div class="metric">
+                <strong>Total PV</strong>
+                <span id="total-pv">0</span>
+            </div>
+            <div class="metric">
+                <strong>Total UV</strong>
+                <span id="total-uv">0</span>
+            </div>
+            <div class="metric">
+                <strong>Today PV</strong>
+                <span id="today-pv">0</span>
+            </div>
+            <div class="metric">
+                <strong>Today UV</strong>
+                <span id="today-uv">0</span>
+            </div>
+        </section>
+
+        <p class="message" id="message">Fill in the Worker URL, then refresh.</p>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>PV</th>
+                    <th>UV</th>
+                </tr>
+            </thead>
+            <tbody id="recent"></tbody>
+        </table>
+    </main>
+
+    <script>
+        const endpointInput = document.getElementById("endpoint");
+        const tokenInput = document.getElementById("token");
+        const message = document.getElementById("message");
+        const recent = document.getElementById("recent");
+
+        endpointInput.value = window.localStorage.getItem("amisoi_stats_endpoint") || "";
+        tokenInput.value = window.localStorage.getItem("amisoi_stats_token") || "";
+
+        function setText(id, value) {
+            document.getElementById(id).textContent = String(value || 0);
+        }
+
+        async function refreshStats() {
+            const endpoint = endpointInput.value.trim().replace(/\/$/, "");
+            const token = tokenInput.value.trim();
+
+            if (!endpoint) {
+                message.textContent = "Fill in the Worker URL first.";
+                return;
+            }
+
+            window.localStorage.setItem("amisoi_stats_endpoint", endpoint);
+            window.localStorage.setItem("amisoi_stats_token", token);
+            message.textContent = "Loading...";
+
+            const url = new URL(`${endpoint}/stats`);
+            if (token) {
+                url.searchParams.set("token", token);
+            }
+
+            try {
+                const response = await window.fetch(url);
+                const data = await response.json();
+
+                if (!response.ok || !data.ok) {
+                    throw new Error(data.error || "Request failed");
+                }
+
+                setText("total-pv", data.total?.pv);
+                setText("total-uv", data.total?.uv);
+                setText("today-pv", data.today?.pv);
+                setText("today-uv", data.today?.uv);
+
+                recent.innerHTML = "";
+                for (const row of data.recent || []) {
+                    const tr = document.createElement("tr");
+                    tr.innerHTML = `<td>${row.date}</td><td>${row.pv}</td><td>${row.uv}</td>`;
+                    recent.append(tr);
+                }
+
+                message.textContent = `Updated. Today is ${data.today?.date || "unknown"}.`;
+            } catch (error) {
+                message.textContent = `Could not load stats: ${error.message}`;
+            }
+        }
+
+        document.getElementById("refresh").addEventListener("click", refreshStats);
+    </script>
+</body>
+</html>
