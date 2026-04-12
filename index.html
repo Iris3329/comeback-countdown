@@ -285,6 +285,41 @@
 
         window.setInterval(updateCountdown, 1000);
         updateCountdown();
+
+        const analyticsEndpoint = "";
+
+        function getVisitorId() {
+            const storageKey = "amisoi_countdown_visitor_id";
+            let visitorId = window.localStorage.getItem(storageKey);
+
+            if (!visitorId) {
+                visitorId = window.crypto?.randomUUID?.() || `${Date.now()}-${Math.random().toString(36).slice(2)}`;
+                window.localStorage.setItem(storageKey, visitorId);
+            }
+
+            return visitorId;
+        }
+
+        function trackPageView() {
+            if (!analyticsEndpoint) {
+                return;
+            }
+
+            window.fetch(`${analyticsEndpoint}/track`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                keepalive: true,
+                body: JSON.stringify({
+                    visitorId: getVisitorId(),
+                    path: window.location.pathname,
+                    referrer: document.referrer
+                })
+            }).catch(() => {});
+        }
+
+        trackPageView();
     </script>
 </body>
 </html>
