@@ -1,0 +1,11 @@
+name = "comeback-countdown-analytics"
+main = "worker/src/index.js"
+compatibility_date = "2026-04-13"
+
+[vars]
+ALLOWED_ORIGINS = "https://iris3329.github.io,http://localhost:8080,http://127.0.0.1:8080"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "comeback_countdown_analytics"
+database_id = "REPLACE_WITH_D1_DATABASE_ID"
