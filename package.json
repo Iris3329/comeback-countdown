@@ -1,0 +1,11 @@
+{
+  "scripts": {
+    "cf:login": "wrangler login",
+    "cf:d1:create": "wrangler d1 create comeback_countdown_analytics",
+    "cf:d1:migrate": "wrangler d1 migrations apply comeback_countdown_analytics --remote",
+    "cf:deploy": "wrangler deploy"
+  },
+  "devDependencies": {
+    "wrangler": "^4.0.0"
+  }
+}
