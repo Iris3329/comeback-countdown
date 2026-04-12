@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TXT Comeback Countdown</title>
+    <style>
+        :root {
+            --pink: #f70684;
+            --hot-pink: #ff2aa1;
+            --ink: #08070a;
+            --soft-white: #fff7fc;
+            --muted-white: rgba(255, 247, 252, 0.74);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            min-height: 100svh;
+            overflow: hidden;
+            color: var(--soft-white);
+            font-family: "Noto Sans SC", "PingFang SC", "Microsoft YaHei", system-ui, -apple-system, sans-serif;
+            background:
+                radial-gradient(circle at 50% 18%, rgba(255, 255, 255, 0.24), transparent 18rem),
+                linear-gradient(180deg, var(--pink) 0%, var(--hot-pink) 52%, #c80061 100%);
+        }
+
+        main {
+            position: relative;
+            display: grid;
+            min-height: 100svh;
+            place-items: center;
+            padding: clamp(72px, 9svh, 96px) 20px 76px;
+        }
+
+        .stage {
+            display: grid;
+            justify-items: center;
+            width: min(100%, 460px);
+            animation: rise 700ms ease both;
+        }
+
+        .album-art {
+            display: grid;
+            place-items: center;
+            width: min(72vw, 320px);
+            aspect-ratio: 1;
+            margin-bottom: clamp(28px, 5svh, 42px);
+            overflow: hidden;
+            border-radius: 8px;
+            background:
+                linear-gradient(135deg, rgba(255, 255, 255, 0.16), transparent 36%),
+                #f70684;
+            box-shadow: 0 24px 54px rgba(76, 0, 40, 0.48);
+        }
+
+        .logo {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            animation: markPulse 2600ms ease-in-out infinite;
+        }
+
+        .countdown-container {
+            width: min(100%, 420px);
+            padding: clamp(18px, 4vw, 24px) clamp(18px, 7vw, 38px);
+            border-radius: 8px;
+            background: rgba(8, 7, 10, 0.82);
+            box-shadow: 0 18px 42px rgba(36, 0, 22, 0.5);
+            backdrop-filter: blur(10px);
+        }
+
+        .title {
+            margin-bottom: 24px;
+            text-align: center;
+            color: var(--soft-white);
+            font-size: clamp(17px, 4.8vw, 22px);
+            font-weight: 700;
+            letter-spacing: 0;
+            line-height: 1.32;
+        }
+
+        .countdown {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: clamp(8px, 3vw, 18px);
+            text-align: center;
+        }
+
+        .time-block {
+            min-width: 0;
+        }
+
+        .number {
+            min-height: 1em;
+            font-variant-numeric: tabular-nums;
+            font-size: clamp(36px, 11vw, 52px);
+            font-weight: 700;
+            line-height: 0.95;
+        }
+
+        .label {
+            margin-top: 8px;
+            color: var(--muted-white);
+            font-size: 13px;
+            line-height: 1;
+            letter-spacing: 0;
+        }
+
+        .event-note {
+            max-width: 420px;
+            margin-top: 18px;
+            color: rgba(255, 247, 252, 0.76);
+            text-align: center;
+            font-size: 13px;
+            line-height: 1.45;
+        }
+
+        .footer {
+            position: absolute;
+            display: grid;
+            justify-items: center;
+            gap: 0;
+            right: 18px;
+            bottom: max(18px, env(safe-area-inset-bottom));
+            left: 18px;
+            text-align: center;
+            pointer-events: none;
+        }
+
+        .signature {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            opacity: 0.5;
+            color: var(--soft-white);
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 0;
+            text-transform: uppercase;
+        }
+
+        .signature-logo {
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        @keyframes rise {
+            from {
+                opacity: 0;
+                transform: translateY(18px) scale(0.98);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        @keyframes markPulse {
+            0%, 100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.035);
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *,
+            *::before,
+            *::after {
+                animation-duration: 1ms !important;
+                animation-iteration-count: 1 !important;
+                scroll-behavior: auto !important;
+                transition-duration: 1ms !important;
+            }
+        }
+
+        @media (max-width: 390px) {
+            main {
+                padding-inline: 14px;
+            }
+
+            .countdown-container {
+                padding-inline: 16px;
+            }
+
+            .number {
+                font-size: clamp(32px, 10vw, 38px);
+            }
+        }
+    </style>
+</head>
+<body>
+    <main>
+        <section class="stage" aria-label="TXT comeback countdown">
+            <div class="album-art" aria-hidden="true">
+                <img
+                    class="logo"
+                    src="https://ibighit.com/public%2FessetPcImage%2F1775026791934_06bb23f73e9d4a758c19df9313dd96f4.jpg"
+                    alt=""
+                >
+            </div>
+
+            <div class="countdown-container">
+                <h1 class="title">TOMORROW X TOGETHER<br>7TH YEAR COMEBACK</h1>
+
+                <div class="countdown" id="countdown">
+                    <div class="time-block">
+                        <div class="number" id="days">00</div>
+                        <div class="label">天</div>
+                    </div>
+                    <div class="time-block">
+                        <div class="number" id="hours">00</div>
+                        <div class="label">小时</div>
+                    </div>
+                    <div class="time-block">
+                        <div class="number" id="minutes">00</div>
+                        <div class="label">分钟</div>
+                    </div>
+                    <div class="time-block">
+                        <div class="number" id="seconds">00</div>
+                        <div class="label">秒</div>
+                    </div>
+                </div>
+            </div>
+
+            <p class="event-note">2026.04.13 18:00 KST • 7TH YEAR: A Moment of Stillness in the Thorns</p>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <span class="signature">
+            <img class="signature-logo" src="assets/logo_amisoi.png" alt="" aria-hidden="true">
+            © AMISOI
+        </span>
+    </footer>
+
+    <script>
+        const targetDate = new Date("2026-04-13T18:00:00+09:00").getTime();
+        const numberEls = {
+            days: document.getElementById("days"),
+            hours: document.getElementById("hours"),
+            minutes: document.getElementById("minutes"),
+            seconds: document.getElementById("seconds")
+        };
+
+        function format(value) {
+            return String(value).padStart(2, "0");
+        }
+
+        function setCountdown(days, hours, minutes, seconds) {
+            numberEls.days.textContent = format(days);
+            numberEls.hours.textContent = format(hours);
+            numberEls.minutes.textContent = format(minutes);
+            numberEls.seconds.textContent = format(seconds);
+        }
+
+        function updateCountdown() {
+            const distance = targetDate - Date.now();
+
+            if (distance <= 0) {
+                setCountdown(0, 0, 0, 0);
+                return;
+            }
+
+            const dayMs = 1000 * 60 * 60 * 24;
+            const hourMs = 1000 * 60 * 60;
+            const minuteMs = 1000 * 60;
+
+            setCountdown(
+                Math.floor(distance / dayMs),
+                Math.floor((distance % dayMs) / hourMs),
+                Math.floor((distance % hourMs) / minuteMs),
+                Math.floor((distance % minuteMs) / 1000)
+            );
+        }
+
+        window.setInterval(updateCountdown, 1000);
+        updateCountdown();
+    </script>
+</body>
+</html>
