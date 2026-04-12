@@ -161,7 +161,7 @@
         const message = document.getElementById("message");
         const recent = document.getElementById("recent");
 
-        endpointInput.value = window.localStorage.getItem("amisoi_stats_endpoint") || "";
+        endpointInput.value = window.localStorage.getItem("amisoi_stats_endpoint") || "https://comeback-countdown-analytics.amisoi.workers.dev";
         tokenInput.value = window.localStorage.getItem("amisoi_stats_token") || "";
 
         function setText(id, value) {

@@ -32,3 +32,9 @@ It does not store visitor IP addresses.
 If `STATS_TOKEN` is set, open stats with:
 
 `https://your-worker.your-subdomain.workers.dev/stats?token=YOUR_TOKEN`
+
+## Current deployment
+
+- Worker URL: `https://comeback-countdown-analytics.amisoi.workers.dev`
+- D1 database: `comeback_countdown_analytics`
+- D1 database id: `2e9a5658-f69c-45e5-b47b-d17401dd39d6`
