@@ -53,7 +53,7 @@
             display: grid;
             min-height: 100svh;
             place-items: center;
-            padding: clamp(72px, 9svh, 96px) 20px 160px;
+            padding: clamp(72px, 9svh, 96px) 20px 100px;
         }
 
         .stage { display: grid; justify-items: center; width: min(100%, 460px); }
@@ -82,28 +82,6 @@
         .number { font-size: clamp(36px, 11vw, 52px); font-weight: 700; }
         .label { margin-top: 8px; font-size: 13px; color: var(--muted-white); }
         .event-note { margin-top: 18px; text-align: center; font-size: 13px; opacity: 0.76; }
-
-        /* 点赞按钮 */
-        .like-container {
-            position: absolute;
-            bottom: 98px;
-            left: 50%;
-            transform: translateX(-50%);
-            z-index: 5;
-        }
-        .like-btn {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            padding: 8px 20px;
-            background: rgba(0, 0, 0, 0.28);
-            border: 1px solid rgba(255,255,255,0.1);
-            border-radius: 30px;
-            color: rgba(255,255,255,0.8);
-            font-size: 14px;
-            backdrop-filter: blur(8px);
-            cursor: pointer;
-        }
 
         footer {
             position: absolute;
@@ -172,13 +150,6 @@
                 <div class="finished-msg" id="finished-msg" style="display:none; margin-top:12px; font-size:20px;">🎉 已回归</div>
             </div>
             <p class="event-note" id="event-note"></p>
-
-            <div class="like-container">
-                <div class="like-btn" id="like-btn">
-                    <span class="like-icon" id="like-icon">♡</span>
-                    <span id="like-count">0</span> 已点赞
-                </div>
-            </div>
         </section>
     </main>
 
@@ -190,15 +161,22 @@
     <div class="share-modal" id="share-modal">
         <div class="share-content">
             <h3>分享这个回归倒计时</h3>
-            <p style="margin:8px 0 16px; opacity:0.75;">回归顺利～</p>
+            <p style="margin:8px 0 16px; opacity:0.75;">你想吧哈哈～</p>
             
             <div class="share-link-box" id="share-link-box">
                 <span id="share-link-text" style="flex:1; text-align:left;"></span>
                 <button class="copy-btn" id="copy-btn" title="复制链接">📋</button>
             </div>
 
+            <!-- 固定二维码（使用你上传的图片） -->
+            <div style="margin: 24px 0 16px;">
+                <img src="https://github.com/Iris3329/comeback-countdown/blob/main/assets/https___iris3329.github.io_comeback-countdown_.png?raw=true" 
+                     alt="列表页二维码" 
+                     style="width:200px; height:200px; border-radius:8px;">
+            </div>
+
             <button onclick="closeShareModal()" 
-                    style="margin-top:8px; padding:12px 32px; background:#FEFEFE; color:#1a1a1a; border:none; border-radius:30px; font-weight:600; width:100%;">
+                    style="padding:12px 32px; background:#FEFEFE; color:#1a1a1a; border:none; border-radius:30px; font-weight:600; width:100%;">
                 关闭
             </button>
         </div>
@@ -208,37 +186,6 @@
         const params = new URLSearchParams(location.search);
         const id = params.get("id");
         let currentGroup = "";
-
-        let likeCount = 1248;
-        let isLiked = false;
-
-        function loadLikeData() {
-            if (!id) return;
-            const saved = localStorage.getItem(`like_${id}`);
-            if (saved) {
-                const data = JSON.parse(saved);
-                likeCount = data.count || likeCount;
-                isLiked = data.liked || false;
-            }
-        }
-
-        function saveLikeData() {
-            if (!id) return;
-            localStorage.setItem(`like_${id}`, JSON.stringify({ count: likeCount, liked: isLiked }));
-        }
-
-        function updateLikeDisplay() {
-            document.getElementById("like-count").textContent = likeCount;
-            const btn = document.getElementById("like-btn");
-            const icon = document.getElementById("like-icon");
-            if (isLiked) {
-                btn.classList.add("liked");
-                icon.textContent = "❤️";
-            } else {
-                btn.classList.remove("liked");
-                icon.textContent = "♡";
-            }
-        }
 
         async function init() {
             let data = [];
@@ -253,7 +200,7 @@
                 return;
             }
 
-            currentGroup = entry.group;   // 保存组合名称，供分享使用
+            currentGroup = entry.group;
 
             document.body.style.setProperty("--c1", entry.c1 || "#f70684");
             document.body.style.setProperty("--c2", entry.c2 || "#c80061");
@@ -266,18 +213,6 @@
             document.getElementById("event-note").textContent = dateStr + (entry.album ? " · " + entry.album : "");
 
             document.getElementById("stage").style.display = "grid";
-
-            loadLikeData();
-            updateLikeDisplay();
-
-            document.getElementById("like-btn").addEventListener("click", () => {
-                if (!isLiked) {
-                    likeCount++;
-                    isLiked = true;
-                    updateLikeDisplay();
-                    saveLikeData();
-                }
-            });
 
             // 倒计时
             const target = new Date(entry.targetISO).getTime();
@@ -300,15 +235,13 @@
             setInterval(tick, 1000);
         }
 
-        // 分享弹窗
+        // 分享功能 - 链接专属，二维码固定
         function showShareModal() {
             const modal = document.getElementById("share-modal");
             const linkText = document.getElementById("share-link-text");
             const currentUrl = window.location.href;
 
-            // 显示更友好的链接（用组合名称替换 id）
-            const friendlyUrl = currentUrl.replace(/id=\d+/, `group=${encodeURIComponent(currentGroup)}`);
-            linkText.textContent = friendlyUrl;
+            linkText.textContent = currentUrl;   // 每个组合保持专属链接
 
             modal.style.display = "flex";
         }
@@ -324,7 +257,7 @@
                 const btn = document.getElementById("copy-btn");
                 const original = btn.textContent;
                 btn.textContent = "✅";
-                setTimeout(() => btn.textContent = original, 1200);
+                setTimeout(() => btn.textContent = original, 1500);
             });
         }
 
