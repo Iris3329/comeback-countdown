@@ -29,8 +29,8 @@
     "img": "https://pbs.twimg.com/media/HFxS9E0bsAAtVSl?format=jpg&name=small",
     "targetISO": "2026-04-16T18:00:00+09:00",
     "tz": "+09:00",
-    "c1": "#FF69B4",
-    "c2": "#DB2777"
+    "c1": "#6F8A5A",
+    "c2": "#7E7462"
   },
   {
     "id": "1744855200000",
@@ -95,8 +95,8 @@
     "img": "https://pbs.twimg.com/card_img/2043880853340860416/kiFpCHBD?format=jpg&name=small",
     "targetISO": "2026-04-24T13:00:00+09:00",
     "tz": "+09:00",
-    "c1": "#FF1493",
-    "c2": "#C71585"
+    "c1": "#ECF9FF",
+    "c2": "#99C7F9"
   },
   {
     "id": "1745726400000",
@@ -106,7 +106,7 @@
     "img": "https://pbs.twimg.com/media/HF36ksCasAIrxwW?format=jpg&name=4096x4096",
     "targetISO": "2026-04-27T18:00:00+09:00",
     "tz": "+09:00",
-    "c1": "#FFD700",
+    "c1": "#FEFEFE",
     "c2": "#FFA500"
   },
   {
@@ -118,7 +118,7 @@
     "targetISO": "2026-04-27T18:00:00+09:00",
     "tz": "+09:00",
     "c1": "#FF00FF",
-    "c2": "#BA55D3"
+    "c2": "#F04EA7"
   },
   {
     "id": "1745812800000",
@@ -128,8 +128,8 @@
     "img": "https://pbs.twimg.com/media/HFxJqUhbcAAyZcD?format=jpg&name=medium",
     "targetISO": "2026-04-28T18:00:00+09:00",
     "tz": "+09:00",
-    "c1": "#FF6347",
-    "c2": "#DC143C"
+    "c1": "#8CB7D9",
+    "c2": "#2379B7"
   },
   {
     "id": "1745899200000",
