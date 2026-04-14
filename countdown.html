@@ -3,7 +3,6 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- SEO meta filled dynamically -->
     <title>KPOP Comeback Countdown</title>
     <meta name="description" content="查看 Kpop 组合回归倒计时｜BTS｜TXT｜TWS｜Track your favorite Kpop idol comeback dates with live countdowns.">
     <meta name="keywords" content="kpop comeback countdown, BTS comeback, TXT comeback, TWS comeback, kpop 回归倒计时">
@@ -11,30 +10,30 @@
     <meta property="og:description" content="查看 Kpop 组合回归倒计时｜BTS｜TXT｜TWS">
     <meta property="og:type" content="website">
     <meta name="twitter:card" content="summary_large_image">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Syne:wght@600;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
             --c1: #f70684;
             --c2: #c80061;
             --soft-white: #fff7fc;
-            --muted-white: rgba(255,247,252,0.72);
+            --muted-white: rgba(255, 247, 252, 0.74);
         }
 
-        * { box-sizing: border-box; margin: 0; padding: 0; }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
 
         body {
             min-height: 100svh;
             overflow: hidden;
             color: var(--soft-white);
-            font-family: 'DM Mono', monospace;
+            font-family: "Noto Sans SC", "PingFang SC", "Microsoft YaHei", system-ui, -apple-system, sans-serif;
             background:
-                radial-gradient(circle at 50% 15%, rgba(255,255,255,0.22), transparent 20rem),
-                linear-gradient(180deg, var(--c1) 0%, color-mix(in srgb, var(--c1) 60%, var(--c2)) 50%, var(--c2) 100%);
-            transition: background 0.5s;
+                radial-gradient(circle at 50% 18%, rgba(255, 255, 255, 0.24), transparent 18rem),
+                linear-gradient(180deg, var(--c1) 0%, color-mix(in srgb, var(--c1) 60%, var(--c2)) 52%, var(--c2) 100%);
         }
 
-        /* back button */
         .back-btn {
             position: fixed;
             top: max(16px, env(safe-area-inset-top));
@@ -44,27 +43,25 @@
             align-items: center;
             gap: 6px;
             padding: 8px 14px;
-            background: rgba(0,0,0,0.22);
-            border: 1px solid rgba(255,255,255,0.16);
+            background: rgba(0, 0, 0, 0.22);
+            border: 1px solid rgba(255, 255, 255, 0.16);
             border-radius: 20px;
             color: var(--soft-white);
-            font-family: 'Syne', sans-serif;
             font-size: 12px;
             font-weight: 700;
-            letter-spacing: 0.06em;
             text-decoration: none;
             backdrop-filter: blur(10px);
             transition: background 0.2s;
         }
 
-        .back-btn:hover { background: rgba(0,0,0,0.38); }
+        .back-btn:hover { background: rgba(0, 0, 0, 0.38); }
 
         main {
             position: relative;
             display: grid;
             min-height: 100svh;
             place-items: center;
-            padding: clamp(72px,9svh,96px) 20px 76px;
+            padding: clamp(72px, 9svh, 96px) 20px 76px;
         }
 
         .stage {
@@ -79,26 +76,28 @@
             place-items: center;
             width: min(72vw, 320px);
             aspect-ratio: 1;
-            margin-bottom: clamp(28px,5svh,42px);
+            margin-bottom: clamp(28px, 5svh, 42px);
             overflow: hidden;
             border-radius: 8px;
-            background: rgba(255,255,255,0.12);
-            box-shadow: 0 24px 54px rgba(0,0,0,0.32);
+            background:
+                linear-gradient(135deg, rgba(255, 255, 255, 0.16), transparent 36%),
+                #f70684;
+            box-shadow: 0 24px 54px rgba(76, 0, 40, 0.48);
         }
 
-        .album-img {
+        .logo {
             width: 100%;
             height: 100%;
             object-fit: cover;
-            animation: pulse 2800ms ease-in-out infinite;
+            animation: markPulse 2600ms ease-in-out infinite;
         }
 
         .countdown-container {
             width: min(100%, 420px);
-            padding: clamp(18px,4vw,24px) clamp(18px,7vw,38px);
+            padding: clamp(18px, 4vw, 24px) clamp(18px, 7vw, 38px);
             border-radius: 8px;
-            background: rgba(8,7,10,0.82);
-            box-shadow: 0 18px 42px rgba(30,0,22,0.5);
+            background: rgba(8, 7, 10, 0.82);
+            box-shadow: 0 18px 42px rgba(36, 0, 22, 0.5);
             backdrop-filter: blur(10px);
         }
 
@@ -106,26 +105,25 @@
             margin-bottom: 24px;
             text-align: center;
             color: var(--soft-white);
-            font-family: "Noto Sans SC", "PingFang SC", "Microsoft YaHei", system-ui, -apple-system, sans-serif;
-            font-size: clamp((17px,4.8vw,22px));
+            font-size: clamp(17px, 4.8vw, 22px);
             font-weight: 700;
+            letter-spacing: 0;
             line-height: 1.32;
-            letter-spacing: 0.01em;
         }
 
         .countdown {
             display: grid;
-            grid-template-columns: repeat(4, minmax(0,1fr));
-            gap: clamp(8px,3vw,18px);
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: clamp(8px, 3vw, 18px);
             text-align: center;
         }
 
         .time-block { min-width: 0; }
 
         .number {
-            font-family: "Noto Sans SC", "PingFang SC", "Microsoft YaHei", system-ui, -apple-system, sans-serif;
+            min-height: 1em;
             font-variant-numeric: tabular-nums;
-            font-size: clamp(36px,11vw,52px);
+            font-size: clamp(36px, 11vw, 52px);
             font-weight: 700;
             line-height: 0.95;
         }
@@ -134,31 +132,33 @@
             margin-top: 8px;
             color: var(--muted-white);
             font-size: 13px;
+            line-height: 1;
+            letter-spacing: 0;
         }
 
         .event-note {
             max-width: 420px;
-            margin-top: 16px;
-            color: rgba(255,247,252,0.76);
+            margin-top: 18px;
+            color: rgba(255, 247, 252, 0.76);
             text-align: center;
             font-size: 13px;
-            line-height: 1;
+            line-height: 1.45;
         }
 
-        /* finished state */
         .finished-msg {
             text-align: center;
-            font-family: 'Syne', sans-serif;
-            font-size: clamp(20px,6vw,28px);
-            font-weight: 800;
+            font-size: clamp(18px, 5vw, 24px);
+            font-weight: 700;
             padding: 8px 0 4px;
-            letter-spacing: 0.02em;
         }
 
         footer {
-            position: fixed;
-            bottom: max(16px, env(safe-area-inset-bottom));
-            left: 0; right: 0;
+            position: absolute;
+            display: grid;
+            justify-items: center;
+            right: 18px;
+            bottom: max(18px, env(safe-area-inset-bottom));
+            left: 18px;
             text-align: center;
             pointer-events: none;
         }
@@ -166,12 +166,13 @@
         .signature {
             display: inline-flex;
             align-items: center;
-            gap: 6px;
-            opacity: 0.45;
+            justify-content: center;
+            gap: 8px;
+            opacity: 0.5;
             color: var(--soft-white);
-            font-size: 11px;
-            font-weight: 500;
-            letter-spacing: 0.12em;
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 0;
             text-transform: uppercase;
         }
 
@@ -186,11 +187,7 @@
             text-align: center;
         }
 
-        .not-found h2 {
-            font-family: 'Syne', sans-serif;
-            font-size: 22px;
-            font-weight: 800;
-        }
+        .not-found h2 { font-size: 22px; font-weight: 700; }
 
         .not-found a {
             color: var(--soft-white);
@@ -199,24 +196,28 @@
         }
 
         @keyframes rise {
-            from { opacity: 0; transform: translateY(20px) scale(0.98); }
+            from { opacity: 0; transform: translateY(18px) scale(0.98); }
             to { opacity: 1; transform: translateY(0) scale(1); }
         }
 
-        @keyframes pulse {
+        @keyframes markPulse {
             0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.03); }
+            50% { transform: scale(1.035); }
         }
 
         @media (prefers-reduced-motion: reduce) {
             *, *::before, *::after {
                 animation-duration: 1ms !important;
                 animation-iteration-count: 1 !important;
+                scroll-behavior: auto !important;
+                transition-duration: 1ms !important;
             }
         }
 
         @media (max-width: 390px) {
-            .number { font-size: clamp(30px,10vw,36px); }
+            main { padding-inline: 14px; }
+            .countdown-container { padding-inline: 16px; }
+            .number { font-size: clamp(32px, 10vw, 38px); }
         }
     </style>
 </head>
@@ -224,7 +225,7 @@
 
 <a class="back-btn" href="index.html">← Back</a>
 
-<main id="main-content">
+<main>
     <div class="not-found" id="not-found" style="display:none">
         <h2>Comeback not found</h2>
         <a href="index.html">← Back to list</a>
@@ -232,8 +233,9 @@
 
     <section class="stage" id="stage" style="display:none" aria-label="comeback countdown">
         <div class="album-art" aria-hidden="true">
-            <img class="album-img" id="album-img" src="" alt="">
+            <img class="logo" id="album-img" src="" alt="">
         </div>
+
         <div class="countdown-container">
             <h1 class="title" id="title-el"></h1>
             <div class="countdown" id="countdown">
@@ -256,6 +258,7 @@
             </div>
             <div class="finished-msg" id="finished-msg" style="display:none">🎉 已回归</div>
         </div>
+
         <p class="event-note" id="event-note"></p>
     </section>
 </main>
@@ -282,7 +285,7 @@ async function init() {
         return;
     }
 
-    // Apply gradient
+    // Apply gradient from config
     document.body.style.setProperty("--c1", entry.c1 || "#f70684");
     document.body.style.setProperty("--c2", entry.c2 || "#c80061");
 
@@ -291,16 +294,16 @@ async function init() {
     document.getElementById("album-img").alt = entry.group;
     document.getElementById("title-el").innerHTML = `${entry.group}<br>${entry.comeback}`;
 
-    // event note
+    // Event note
     const d = new Date(entry.targetISO);
-    const dateStr = `${d.getFullYear()}.${String(d.getMonth()+1).padStart(2,'0')}.${String(d.getDate()).padStart(2,'0')} ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')} (UTC${entry.tz})`;
+    const dateStr = `${d.getFullYear()}.${String(d.getMonth()+1).padStart(2,'0')}.${String(d.getDate()).padStart(2,'0')} ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')} KST`;
     document.getElementById("event-note").textContent =
         dateStr + (entry.album ? " · " + entry.album : "");
 
     document.title = `${entry.group} Comeback Countdown · KPOP`;
     document.getElementById("stage").style.display = "grid";
 
-    // Countdown
+    // Countdown timer
     const target = new Date(entry.targetISO).getTime();
     const els = {
         days: document.getElementById("days"),
@@ -309,7 +312,7 @@ async function init() {
         seconds: document.getElementById("seconds"),
     };
 
-    function fmt(v) { return String(v).padStart(2,"0"); }
+    function fmt(v) { return String(v).padStart(2, "0"); }
 
     function tick() {
         const diff = target - Date.now();
