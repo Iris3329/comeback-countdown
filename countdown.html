@@ -92,42 +92,53 @@
         }
         .signature { opacity: 0.5; font-size: 12px; font-weight: 700; }
 
-        /* 分享弹窗 */
+        /* 分享弹窗 - 美化版 */
         .share-modal {
             position: fixed;
             inset: 0;
-            background: rgba(0,0,0,0.88);
+            background: rgba(0,0,0,0.92);
             display: none;
             align-items: center;
             justify-content: center;
             z-index: 100;
         }
         .share-content {
-            background: #1c1c1c;
-            padding: 28px 24px;
-            border-radius: 16px;
-            width: min(92%, 380px);
+            background: #1f1f1f;
+            padding: 32px 24px;
+            border-radius: 20px;
+            width: min(92%, 400px);
             text-align: center;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.6);
+        }
+        .share-content h3 {
+            margin-bottom: 8px;
+            font-size: 19px;
+        }
+        .share-content p {
+            margin-bottom: 20px;
+            opacity: 0.8;
+            font-size: 15px;
         }
         .share-link-box {
             display: flex;
             align-items: center;
-            background: #333;
-            padding: 12px 14px;
-            border-radius: 8px;
-            margin: 16px 0;
-            font-size: 13px;
+            background: #2a2a2a;
+            padding: 14px 16px;
+            border-radius: 12px;
+            margin: 16px 0 24px;
+            font-size: 13.5px;
             word-break: break-all;
+            border: 1px solid #444;
         }
         .copy-btn {
-            margin-left: 10px;
+            margin-left: 12px;
             background: none;
             border: none;
-            color: #fff;
-            font-size: 18px;
+            color: #aaa;
+            font-size: 20px;
             cursor: pointer;
-            padding: 4px;
         }
+        .copy-btn:hover { color: #fff; }
     </style>
 </head>
 <body>
@@ -161,22 +172,22 @@
     <div class="share-modal" id="share-modal">
         <div class="share-content">
             <h3>分享这个回归倒计时</h3>
-            <p style="margin:8px 0 16px; opacity:0.75;">你想吧哈哈～</p>
+            <p>你想吧哈哈～</p>
             
             <div class="share-link-box" id="share-link-box">
                 <span id="share-link-text" style="flex:1; text-align:left;"></span>
                 <button class="copy-btn" id="copy-btn" title="复制链接">📋</button>
             </div>
 
-            <!-- 固定二维码（使用你上传的图片） -->
-            <div style="margin: 24px 0 16px;">
-                <img src="https://github.com/Iris3329/comeback-countdown/blob/main/assets/https___iris3329.github.io_comeback-countdown_.png?raw=true" 
+            <!-- 固定二维码（列表页） -->
+            <div style="margin: 20px 0 24px;">
+                <img src="https://raw.githubusercontent.com/Iris3329/comeback-countdown/main/assets/https___iris3329.github.io_comeback-countdown_.png" 
                      alt="列表页二维码" 
-                     style="width:200px; height:200px; border-radius:8px;">
+                     style="width:210px; height:210px; border-radius:12px; box-shadow: 0 8px 20px rgba(0,0,0,0.5);">
             </div>
 
             <button onclick="closeShareModal()" 
-                    style="padding:12px 32px; background:#FEFEFE; color:#1a1a1a; border:none; border-radius:30px; font-weight:600; width:100%;">
+                    style="padding:14px 36px; background:#FEFEFE; color:#1a1a1a; border:none; border-radius:30px; font-weight:600; width:100%;">
                 关闭
             </button>
         </div>
@@ -214,7 +225,7 @@
 
             document.getElementById("stage").style.display = "grid";
 
-            // 倒计时
+            // 倒计时逻辑（保持不变）
             const target = new Date(entry.targetISO).getTime();
             const els = { days: document.getElementById("days"), hours: document.getElementById("hours"), minutes: document.getElementById("minutes"), seconds: document.getElementById("seconds") };
             function fmt(v) { return String(v).padStart(2, "0"); }
@@ -235,13 +246,15 @@
             setInterval(tick, 1000);
         }
 
-        // 分享功能 - 链接专属，二维码固定
+        // 分享功能
         function showShareModal() {
             const modal = document.getElementById("share-modal");
             const linkText = document.getElementById("share-link-text");
-            const currentUrl = window.location.href;
-
-            linkText.textContent = currentUrl;   // 每个组合保持专属链接
+            
+            // 专属链接（带组合名称）
+            const baseUrl = "https://iris3329.github.io/comeback-countdown/";
+            const friendlyUrl = `${baseUrl}?group=${encodeURIComponent(currentGroup)}`;
+            linkText.textContent = friendlyUrl;
 
             modal.style.display = "flex";
         }
@@ -250,10 +263,10 @@
             document.getElementById("share-modal").style.display = "none";
         }
 
-        // 复制链接
         function copyLink() {
-            const currentUrl = window.location.href;
-            navigator.clipboard.writeText(currentUrl).then(() => {
+            const baseUrl = "https://iris3329.github.io/comeback-countdown/";
+            const friendlyUrl = `${baseUrl}?group=${encodeURIComponent(currentGroup)}`;
+            navigator.clipboard.writeText(friendlyUrl).then(() => {
                 const btn = document.getElementById("copy-btn");
                 const original = btn.textContent;
                 btn.textContent = "✅";
