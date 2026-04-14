@@ -25,7 +25,7 @@
     "id": "1744761600000",
     "group": "Whee In",
     "comeback": "SINGLE [adagio]",
-    "album": "SINGLE [adagio]",
+    "album": "[adagio]",
     "img": "https://pbs.twimg.com/media/HFxS9E0bsAAtVSl?format=jpg&name=small",
     "targetISO": "2026-04-16T18:00:00+09:00",
     "tz": "+09:00",
@@ -35,7 +35,7 @@
   {
     "id": "1744855200000",
     "group": "Xdinary Heroes",
-    "comeback": "8th Mini Album",
+    "comeback": "8th Mini Album 'DEAD AND'",
     "album": "DEAD AND",
     "img": "https://pbs.twimg.com/profile_images/2034827608484134912/rAzoWtX1_400x400.jpg",
     "targetISO": "2026-04-17T13:00:00+09:00",
@@ -46,20 +46,20 @@
   {
     "id": "1745107200000",
     "group": "NCT WISH",
-    "comeback": "The 1st Album",
+    "comeback": "The 1st Album 'Ode to Love'",
     "album": "Ode to Love",
     "img": "https://pbs.twimg.com/media/HFwvqi5bcAAzFA3?format=jpg&name=4096x4096",
     "targetISO": "2026-04-20T18:00:00+09:00",
     "tz": "+09:00",
-    "c1": "#00BFFF",
+    "c1": "#D4D3D0",
     "c2": "#1E90FF"
   },
   {
     "id": "1745110800000",
     "group": "CORTIS",
-    "comeback": "Pre-release Lead Single",
+    "comeback": "Pre-release Lead Single 'REDRED'",
     "album": "REDRED",
-    "img": "https://pbs.twimg.com/media/HEqoyJNa8AAXXdg?format=jpg&name=360x360",
+    "img": "https://pbs.twimg.com/media/HFYW5Txa8AEST8Q?format=jpg&name=4096x4096",
     "targetISO": "2026-04-20T18:00:00+09:00",
     "tz": "+09:00",
     "c1": "#00FF7F",
@@ -68,7 +68,7 @@
   {
     "id": "1745200800000",
     "group": "&TEAM",
-    "comeback": "3rd EP",
+    "comeback": "3rd EP 'We on Fire'",
     "album": "We on Fire",
     "img": "https://pbs.twimg.com/media/HA7clXoaQAAMTf_?format=jpg&name=small",
     "targetISO": "2026-04-21T18:00:00+09:00",
@@ -78,7 +78,7 @@
   },
   {
     "id": "1745287200000",
-    "group": "VVS",
+    "group": "VVS 'Stay The Night'",
     "comeback": "Stay The Night",
     "album": "",
     "img": "https://pbs.twimg.com/media/HFsTDx8bUAA4ISc?format=png&name=360x360",
@@ -90,9 +90,9 @@
   {
     "id": "1745460000000",
     "group": "Le Sserafim",
-    "comeback": "Lead Single",
+    "comeback": "Lead Single 'Celebration'",
     "album": "Celebration",
-    "img": "",
+    "img": "https://pbs.twimg.com/card_img/2043880853340860416/kiFpCHBD?format=jpg&name=small",
     "targetISO": "2026-04-24T13:00:00+09:00",
     "tz": "+09:00",
     "c1": "#FF1493",
@@ -101,7 +101,7 @@
   {
     "id": "1745726400000",
     "group": "XngHan&Xoul",
-    "comeback": "The 1st Mini Album",
+    "comeback": "The 1st Mini Album 'Glow'",
     "album": "Glow",
     "img": "https://pbs.twimg.com/media/HF36ksCasAIrxwW?format=jpg&name=4096x4096",
     "targetISO": "2026-04-27T18:00:00+09:00",
@@ -112,7 +112,7 @@
   {
     "id": "1745730000000",
     "group": "QWER",
-    "comeback": "4th Mini-Album",
+    "comeback": "4th Mini-Album 'Ceremony'",
     "album": "Ceremony",
     "img": "https://pbs.twimg.com/media/HFwnL6xaUAAob_u?format=jpg&name=medium",
     "targetISO": "2026-04-27T18:00:00+09:00",
@@ -123,7 +123,7 @@
   {
     "id": "1745812800000",
     "group": "Lee Chaeyeon",
-    "comeback": "4th Mini-Album",
+    "comeback": "4th Mini-Album 'Till I Die'",
     "album": "Till I Die",
     "img": "https://pbs.twimg.com/media/HFxJqUhbcAAyZcD?format=jpg&name=medium",
     "targetISO": "2026-04-28T18:00:00+09:00",
@@ -134,7 +134,7 @@
   {
     "id": "1745899200000",
     "group": "PARK JI HOON",
-    "comeback": "1st Single Album",
+    "comeback": "1st Single Album 'RE:FLECT'",
     "album": "RE:FLECT",
     "img": "https://pbs.twimg.com/media/HFNmr1AasAAIScP?format=jpg&name=4096x4096",
     "targetISO": "2026-04-29T18:00:00+09:00",
@@ -145,7 +145,7 @@
   {
     "id": "1745902800000",
     "group": "BAND LUCY",
-    "comeback": "2ND FULL ALBUM",
+    "comeback": "2ND FULL ALBUM 'Childish'",
     "album": "Childish",
     "img": "https://pbs.twimg.com/media/HFyMQ8cagAAi0J1?format=jpg&name=small",
     "targetISO": "2026-04-29T18:00:00+09:00",
