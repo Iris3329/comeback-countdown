@@ -1,0 +1,678 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin · AMISOI Countdown</title>
+    <meta name="robots" content="noindex, nofollow">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #0a0a0f;
+            --surface: #13121a;
+            --border: rgba(255,255,255,0.08);
+            --accent: #f70684;
+            --accent-dim: rgba(247, 6, 132, 0.15);
+            --text: #f0edf5;
+            --muted: rgba(240, 237, 245, 0.45);
+            --input-bg: #1a1825;
+            --danger: #ff4d6d;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            min-height: 100svh;
+            background: var(--bg);
+            color: var(--text);
+            font-family: 'DM Mono', monospace;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* ── Lock screen ── */
+        #lock-screen {
+            position: fixed; inset: 0;
+            display: flex; align-items: center; justify-content: center;
+            background: var(--bg);
+            z-index: 100;
+        }
+
+        .lock-box {
+            width: min(360px, 90vw);
+            text-align: center;
+        }
+
+        .lock-mark {
+            font-family: 'Syne', sans-serif;
+            font-size: 11px;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: var(--accent);
+            margin-bottom: 32px;
+        }
+
+        .lock-title {
+            font-family: 'Syne', sans-serif;
+            font-size: 28px;
+            font-weight: 800;
+            margin-bottom: 8px;
+        }
+
+        .lock-sub {
+            font-size: 12px;
+            color: var(--muted);
+            margin-bottom: 32px;
+        }
+
+        .lock-input {
+            width: 100%;
+            padding: 14px 16px;
+            background: var(--input-bg);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            color: var(--text);
+            font-family: 'DM Mono', monospace;
+            font-size: 14px;
+            text-align: center;
+            letter-spacing: 0.25em;
+            outline: none;
+            transition: border-color 0.2s;
+            margin-bottom: 12px;
+        }
+
+        .lock-input:focus { border-color: var(--accent); }
+
+        .lock-btn {
+            width: 100%;
+            padding: 14px;
+            background: var(--accent);
+            border: none;
+            border-radius: 6px;
+            color: #fff;
+            font-family: 'Syne', sans-serif;
+            font-size: 14px;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            cursor: pointer;
+            transition: opacity 0.2s;
+        }
+
+        .lock-btn:hover { opacity: 0.85; }
+
+        .lock-error {
+            margin-top: 10px;
+            font-size: 12px;
+            color: var(--danger);
+            min-height: 18px;
+        }
+
+        /* ── Main admin UI ── */
+        #admin-ui {
+            display: none;
+            width: 100%;
+            max-width: 680px;
+            padding: 48px 24px 80px;
+        }
+
+        .admin-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 40px;
+        }
+
+        .admin-logo {
+            font-family: 'Syne', sans-serif;
+            font-size: 11px;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: var(--accent);
+        }
+
+        .admin-title {
+            font-family: 'Syne', sans-serif;
+            font-size: 22px;
+            font-weight: 800;
+        }
+
+        .btn-add {
+            padding: 10px 20px;
+            background: var(--accent);
+            border: none;
+            border-radius: 6px;
+            color: #fff;
+            font-family: 'Syne', sans-serif;
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            cursor: pointer;
+            transition: opacity 0.2s;
+        }
+
+        .btn-add:hover { opacity: 0.85; }
+
+        /* ── Entries list ── */
+        #entries-list { margin-bottom: 48px; }
+
+        .entry-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 16px 20px;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .entry-thumb {
+            width: 44px; height: 44px;
+            border-radius: 6px;
+            object-fit: cover;
+            background: var(--input-bg);
+            flex-shrink: 0;
+        }
+
+        .entry-info { flex: 1; min-width: 0; }
+
+        .entry-name {
+            font-family: 'Syne', sans-serif;
+            font-size: 14px;
+            font-weight: 700;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .entry-meta {
+            font-size: 11px;
+            color: var(--muted);
+            margin-top: 3px;
+        }
+
+        .entry-actions { display: flex; gap: 8px; flex-shrink: 0; }
+
+        .btn-sm {
+            padding: 6px 14px;
+            border-radius: 4px;
+            font-family: 'DM Mono', monospace;
+            font-size: 11px;
+            cursor: pointer;
+            border: 1px solid var(--border);
+            background: transparent;
+            color: var(--muted);
+            transition: all 0.2s;
+        }
+
+        .btn-sm:hover { border-color: var(--accent); color: var(--accent); }
+        .btn-sm.danger:hover { border-color: var(--danger); color: var(--danger); }
+
+        /* ── Form ── */
+        #form-section {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 28px 24px;
+        }
+
+        .form-title {
+            font-family: 'Syne', sans-serif;
+            font-size: 16px;
+            font-weight: 800;
+            margin-bottom: 24px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .form-group.full { grid-column: 1 / -1; }
+
+        label {
+            font-size: 11px;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--muted);
+        }
+
+        label span { color: var(--accent); }
+
+        input[type="text"],
+        input[type="url"],
+        input[type="datetime-local"],
+        select,
+        textarea {
+            padding: 11px 14px;
+            background: var(--input-bg);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            color: var(--text);
+            font-family: 'DM Mono', monospace;
+            font-size: 13px;
+            outline: none;
+            transition: border-color 0.2s;
+            width: 100%;
+        }
+
+        input:focus, select:focus, textarea:focus { border-color: var(--accent); }
+
+        select option { background: var(--input-bg); }
+
+        textarea { resize: vertical; min-height: 70px; }
+
+        /* gradient builder */
+        .grad-row {
+            display: grid;
+            grid-template-columns: auto 1fr auto 1fr auto;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .grad-row label { text-transform: none; letter-spacing: 0; font-size: 12px; }
+
+        input[type="color"] {
+            width: 40px; height: 36px;
+            padding: 2px 4px;
+            border-radius: 6px;
+            border: 1px solid var(--border);
+            background: var(--input-bg);
+            cursor: pointer;
+        }
+
+        .preview-grad {
+            height: 36px;
+            border-radius: 6px;
+            border: 1px solid var(--border);
+            transition: background 0.3s;
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 24px;
+            justify-content: flex-end;
+        }
+
+        .btn-cancel {
+            padding: 12px 22px;
+            background: transparent;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            color: var(--muted);
+            font-family: 'Syne', sans-serif;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-cancel:hover { border-color: var(--text); color: var(--text); }
+
+        .btn-save {
+            padding: 12px 28px;
+            background: var(--accent);
+            border: none;
+            border-radius: 6px;
+            color: #fff;
+            font-family: 'Syne', sans-serif;
+            font-size: 13px;
+            font-weight: 700;
+            letter-spacing: 0.06em;
+            cursor: pointer;
+            transition: opacity 0.2s;
+        }
+
+        .btn-save:hover { opacity: 0.85; }
+
+        .toast {
+            position: fixed;
+            bottom: 24px; left: 50%;
+            transform: translateX(-50%) translateY(60px);
+            background: var(--accent);
+            color: #fff;
+            padding: 12px 24px;
+            border-radius: 6px;
+            font-size: 13px;
+            font-family: 'Syne', sans-serif;
+            font-weight: 700;
+            opacity: 0;
+            transition: all 0.3s;
+            pointer-events: none;
+        }
+
+        .toast.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 32px;
+            color: var(--muted);
+            font-size: 13px;
+            border: 1px dashed var(--border);
+            border-radius: 8px;
+            margin-bottom: 10px;
+        }
+
+        @media (max-width: 560px) {
+            .form-grid { grid-template-columns: 1fr; }
+            .form-group.full { grid-column: 1; }
+            .grad-row { grid-template-columns: auto 1fr auto 1fr; }
+            .grad-row .preview-wrap { display: none; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- Lock Screen -->
+<div id="lock-screen">
+    <div class="lock-box">
+        <div class="lock-mark">AMISOI · Admin</div>
+        <div class="lock-title">Enter Password</div>
+        <div class="lock-sub">This page is private</div>
+        <input type="password" id="pw-input" class="lock-input" placeholder="••••••••" autocomplete="current-password">
+        <button class="lock-btn" onclick="checkPassword()">Unlock</button>
+        <div class="lock-error" id="pw-error"></div>
+    </div>
+</div>
+
+<!-- Admin UI -->
+<div id="admin-ui">
+    <div class="admin-header">
+        <div>
+            <div class="admin-logo">AMISOI · Admin</div>
+            <div class="admin-title">Comeback Manager</div>
+        </div>
+        <div style="display:flex;gap:8px">
+            <button class="btn-add" style="background:transparent;border:1px solid rgba(247,6,132,0.4);color:var(--accent)" onclick="exportJSON()">Export JSON</button>
+            <button class="btn-add" onclick="openForm()">+ Add New</button>
+        </div>
+    </div>
+
+    <div id="export-box" style="display:none;margin-bottom:16px">
+        <div style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);margin-bottom:8px">
+            Copy this → paste into <code style="color:var(--accent)">data.json</code> → commit &amp; push
+        </div>
+        <textarea id="export-text" style="width:100%;height:160px;font-size:11px;background:var(--input-bg);border:1px solid var(--border);border-radius:6px;padding:12px;color:var(--text);font-family:'DM Mono',monospace;resize:vertical" readonly></textarea>
+        <button class="btn-save" style="margin-top:8px;width:100%" onclick="copyJSON()">Copy to Clipboard</button>
+    </div>
+
+    <div id="entries-list"></div>
+
+    <div id="form-section" style="display:none">
+        <div class="form-title" id="form-title">Add Comeback</div>
+        <div class="form-grid">
+            <div class="form-group">
+                <label>Group Name <span>*</span></label>
+                <input type="text" id="f-group" placeholder="TOMORROW X TOGETHER">
+            </div>
+            <div class="form-group">
+                <label>Comeback Name <span>*</span></label>
+                <input type="text" id="f-name" placeholder="7TH YEAR COMEBACK">
+            </div>
+            <div class="form-group full">
+                <label>Album Name (optional)</label>
+                <input type="text" id="f-album" placeholder="7TH YEAR: A Moment of Stillness in the Thorns">
+            </div>
+            <div class="form-group full">
+                <label>Cover Image URL <span>*</span></label>
+                <input type="url" id="f-img" placeholder="https://..." oninput="previewImg()">
+            </div>
+            <div class="form-group">
+                <label>Comeback Date & Time <span>*</span></label>
+                <input type="datetime-local" id="f-date">
+            </div>
+            <div class="form-group">
+                <label>Timezone <span>*</span></label>
+                <select id="f-tz"></select>
+            </div>
+            <div class="form-group full">
+                <label>Background Gradient</label>
+                <div class="grad-row">
+                    <label>From</label>
+                    <input type="color" id="f-c1" value="#f70684" oninput="updatePreview()">
+                    <label>To</label>
+                    <input type="color" id="f-c2" value="#c80061" oninput="updatePreview()">
+                    <div class="preview-wrap" style="flex:1">
+                        <div class="preview-grad" id="grad-preview"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="form-actions">
+            <button class="btn-cancel" onclick="closeForm()">Cancel</button>
+            <button class="btn-save" onclick="saveEntry()">Save</button>
+        </div>
+    </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ── Password ──────────────────────────────────────────────
+const PASSWORD = "amisoi2024"; // change this
+
+function checkPassword() {
+    const val = document.getElementById("pw-input").value;
+    if (val === PASSWORD) {
+        document.getElementById("lock-screen").style.display = "none";
+        document.getElementById("admin-ui").style.display = "block";
+        renderList();
+    } else {
+        document.getElementById("pw-error").textContent = "Incorrect password.";
+    }
+}
+
+document.getElementById("pw-input").addEventListener("keydown", e => {
+    if (e.key === "Enter") checkPassword();
+});
+
+// ── Timezones ─────────────────────────────────────────────
+const TZ_LIST = [
+    { label: "KST (UTC+9)", value: "+09:00" },
+    { label: "JST (UTC+9)", value: "+09:00" },
+    { label: "CST (UTC+8)", value: "+08:00" },
+    { label: "SGT (UTC+8)", value: "+08:00" },
+    { label: "IST (UTC+5:30)", value: "+05:30" },
+    { label: "CET (UTC+1)", value: "+01:00" },
+    { label: "GMT (UTC+0)", value: "+00:00" },
+    { label: "EST (UTC-5)", value: "-05:00" },
+    { label: "CST (UTC-6)", value: "-06:00" },
+    { label: "PST (UTC-8)", value: "-08:00" },
+];
+
+const tzSel = document.getElementById("f-tz");
+TZ_LIST.forEach(tz => {
+    const opt = document.createElement("option");
+    opt.value = tz.value;
+    opt.textContent = tz.label;
+    tzSel.appendChild(opt);
+});
+
+// ── Data ─────────────────────────────────────────────────
+const STORAGE_KEY = "amisoi_comebacks";
+
+function load() {
+    try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || []; }
+    catch { return []; }
+}
+
+function save(data) {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+}
+
+// ── Render list ───────────────────────────────────────────
+function renderList() {
+    const data = load();
+    const el = document.getElementById("entries-list");
+
+    if (data.length === 0) {
+        el.innerHTML = '<div class="empty-state">No comebacks yet. Click "+ Add New" to get started.</div>';
+        return;
+    }
+
+    el.innerHTML = data.map((entry, i) => {
+        const ts = new Date(entry.targetISO);
+        const isPast = ts < Date.now();
+        return `
+        <div class="entry-card">
+            <img class="entry-thumb" src="${entry.img || ''}" alt="" onerror="this.style.opacity=0.2">
+            <div class="entry-info">
+                <div class="entry-name">${entry.group} · ${entry.comeback}</div>
+                <div class="entry-meta">${ts.toLocaleDateString('zh-CN')} ${ts.toLocaleTimeString('zh-CN', {hour:'2-digit',minute:'2-digit'})} ${isPast ? '· <span style="color:#f70684">已回归</span>' : ''}</div>
+            </div>
+            <div class="entry-actions">
+                <button class="btn-sm" onclick="editEntry(${i})">Edit</button>
+                <button class="btn-sm danger" onclick="deleteEntry(${i})">Delete</button>
+            </div>
+        </div>`;
+    }).join('');
+}
+
+// ── Form ─────────────────────────────────────────────────
+let editingIndex = -1;
+
+function openForm(idx = -1) {
+    editingIndex = idx;
+    const form = document.getElementById("form-section");
+    form.style.display = "block";
+
+    if (idx >= 0) {
+        const entry = load()[idx];
+        document.getElementById("form-title").textContent = "Edit Comeback";
+        document.getElementById("f-group").value = entry.group || "";
+        document.getElementById("f-name").value = entry.comeback || "";
+        document.getElementById("f-album").value = entry.album || "";
+        document.getElementById("f-img").value = entry.img || "";
+        document.getElementById("f-c1").value = entry.c1 || "#f70684";
+        document.getElementById("f-c2").value = entry.c2 || "#c80061";
+        // parse date
+        const d = new Date(entry.targetISO);
+        const local = new Date(d.getTime() - d.getTimezoneOffset() * 60000);
+        document.getElementById("f-date").value = local.toISOString().slice(0, 16);
+        document.getElementById("f-tz").value = entry.tz || "+09:00";
+    } else {
+        document.getElementById("form-title").textContent = "Add Comeback";
+        document.getElementById("f-group").value = "";
+        document.getElementById("f-name").value = "";
+        document.getElementById("f-album").value = "";
+        document.getElementById("f-img").value = "";
+        document.getElementById("f-c1").value = "#f70684";
+        document.getElementById("f-c2").value = "#c80061";
+        document.getElementById("f-date").value = "";
+        document.getElementById("f-tz").value = "+09:00";
+    }
+
+    updatePreview();
+    form.scrollIntoView({ behavior: "smooth" });
+}
+
+function closeForm() {
+    document.getElementById("form-section").style.display = "none";
+    editingIndex = -1;
+}
+
+function editEntry(idx) { openForm(idx); }
+
+function deleteEntry(idx) {
+    if (!confirm("Delete this entry?")) return;
+    const data = load();
+    data.splice(idx, 1);
+    save(data);
+    renderList();
+    showToast("Deleted");
+}
+
+function updatePreview() {
+    const c1 = document.getElementById("f-c1").value;
+    const c2 = document.getElementById("f-c2").value;
+    document.getElementById("grad-preview").style.background =
+        `linear-gradient(135deg, ${c1}, ${c2})`;
+}
+
+function previewImg() { /* could add live preview later */ }
+
+function buildISO(dateStr, tzOffset) {
+    // dateStr: "2026-04-13T18:00", tzOffset: "+09:00"
+    return dateStr + ":00" + tzOffset;
+}
+
+function saveEntry() {
+    const group = document.getElementById("f-group").value.trim();
+    const comeback = document.getElementById("f-name").value.trim();
+    const album = document.getElementById("f-album").value.trim();
+    const img = document.getElementById("f-img").value.trim();
+    const dateVal = document.getElementById("f-date").value;
+    const tz = document.getElementById("f-tz").value;
+    const c1 = document.getElementById("f-c1").value;
+    const c2 = document.getElementById("f-c2").value;
+
+    if (!group || !comeback || !img || !dateVal) {
+        showToast("Please fill required fields", true);
+        return;
+    }
+
+    const targetISO = buildISO(dateVal, tz);
+
+    const entry = { group, comeback, album, img, targetISO, tz, c1, c2, id: Date.now().toString() };
+
+    const data = load();
+    if (editingIndex >= 0) {
+        entry.id = data[editingIndex].id;
+        data[editingIndex] = entry;
+    } else {
+        data.unshift(entry);
+    }
+    save(data);
+    renderList();
+    closeForm();
+    showToast("Saved ✓");
+}
+
+function showToast(msg, isErr = false) {
+    const t = document.getElementById("toast");
+    t.textContent = msg;
+    t.style.background = isErr ? "#ff4d6d" : "#f70684";
+    t.classList.add("show");
+    setTimeout(() => t.classList.remove("show"), 2200);
+}
+
+updatePreview();
+
+function exportJSON() {
+    const data = load();
+    const box = document.getElementById("export-box");
+    const ta = document.getElementById("export-text");
+    ta.value = JSON.stringify(data, null, 2);
+    box.style.display = box.style.display === "none" ? "block" : "none";
+    if (box.style.display === "block") {
+        box.scrollIntoView({ behavior: "smooth" });
+    }
+}
+function copyJSON() {
+    const ta = document.getElementById("export-text");
+    navigator.clipboard.writeText(ta.value).then(() => {
+        showToast("Copied ✓");
+    }).catch(() => {
+        ta.select();
+        document.execCommand("copy");
+        showToast("Copied ✓");
+    });
+}
+
+</script>
+</body>
+</html>
