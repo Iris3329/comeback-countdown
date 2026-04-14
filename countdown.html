@@ -17,13 +17,11 @@
             --soft-white: #fff7fc;
             --muted-white: rgba(255, 247, 252, 0.74);
         }
-
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
         }
-
         body {
             min-height: 100svh;
             overflow: hidden;
@@ -33,7 +31,6 @@
                 radial-gradient(circle at 50% 18%, rgba(255, 255, 255, 0.24), transparent 18rem),
                 linear-gradient(180deg, var(--c1) 0%, color-mix(in srgb, var(--c1) 60%, var(--c2)) 52%, var(--c2) 100%);
         }
-
         .back-btn {
             position: fixed;
             top: max(16px, env(safe-area-inset-top));
@@ -53,24 +50,43 @@
             backdrop-filter: blur(10px);
             transition: background 0.2s;
         }
-
         .back-btn:hover { background: rgba(0, 0, 0, 0.38); }
+
+        /* 新增：分享按钮 */
+        .share-btn {
+            position: fixed;
+            top: max(16px, env(safe-area-inset-top));
+            right: 16px;
+            z-index: 10;
+            width: 38px;
+            height: 38px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(0, 0, 0, 0.22);
+            border: 1px solid rgba(255, 255, 255, 0.16);
+            border-radius: 50%;
+            color: var(--soft-white);
+            font-size: 18px;
+            backdrop-filter: blur(10px);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .share-btn:hover { background: rgba(0, 0, 0, 0.45); transform: scale(1.08); }
 
         main {
             position: relative;
             display: grid;
             min-height: 100svh;
             place-items: center;
-            padding: clamp(72px, 9svh, 96px) 20px 76px;
+            padding: clamp(72px, 9svh, 96px) 20px 96px; /* 底部留更多空间给点赞 */
         }
-
         .stage {
             display: grid;
             justify-items: center;
             width: min(100%, 460px);
             animation: rise 700ms ease both;
         }
-
         .album-art {
             display: grid;
             place-items: center;
@@ -84,14 +100,12 @@
                 #f70684;
             box-shadow: 0 24px 54px rgba(76, 0, 40, 0.48);
         }
-
         .logo {
             width: 100%;
             height: 100%;
             object-fit: cover;
             animation: markPulse 2600ms ease-in-out infinite;
         }
-
         .countdown-container {
             width: min(100%, 420px);
             padding: clamp(18px, 4vw, 24px) clamp(18px, 7vw, 38px);
@@ -100,7 +114,6 @@
             box-shadow: 0 18px 42px rgba(36, 0, 22, 0.5);
             backdrop-filter: blur(10px);
         }
-
         .title {
             margin-bottom: 24px;
             text-align: center;
@@ -110,16 +123,13 @@
             letter-spacing: 0;
             line-height: 1.32;
         }
-
         .countdown {
             display: grid;
             grid-template-columns: repeat(4, minmax(0, 1fr));
             gap: clamp(8px, 3vw, 18px);
             text-align: center;
         }
-
         .time-block { min-width: 0; }
-
         .number {
             min-height: 1em;
             font-variant-numeric: tabular-nums;
@@ -127,7 +137,6 @@
             font-weight: 700;
             line-height: 0.95;
         }
-
         .label {
             margin-top: 8px;
             color: var(--muted-white);
@@ -135,7 +144,6 @@
             line-height: 1;
             letter-spacing: 0;
         }
-
         .event-note {
             max-width: 420px;
             margin-top: 18px;
@@ -144,12 +152,49 @@
             font-size: 13px;
             line-height: 1.45;
         }
-
         .finished-msg {
             text-align: center;
             font-size: clamp(18px, 5vw, 24px);
             font-weight: 700;
             padding: 8px 0 4px;
+        }
+
+        /* 新增：点赞按钮 */
+        .like-container {
+            position: absolute;
+            bottom: 68px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 5;
+        }
+        .like-btn {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 24px;
+            background: rgba(0, 0, 0, 0.55);
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 30px;
+            color: var(--soft-white);
+            font-size: 15px;
+            font-weight: 600;
+            backdrop-filter: blur(10px);
+            cursor: pointer;
+            transition: all 0.25s;
+        }
+        .like-btn:hover {
+            background: rgba(0, 0, 0, 0.75);
+        }
+        .like-btn.liked {
+            background: rgba(255, 255, 255, 0.15);
+            border-color: #ff4d94;
+        }
+        .like-icon {
+            font-size: 20px;
+            transition: transform 0.3s;
+        }
+        .like-btn.liked .like-icon {
+            transform: scale(1.2);
         }
 
         footer {
@@ -162,7 +207,6 @@
             text-align: center;
             pointer-events: none;
         }
-
         .signature {
             display: inline-flex;
             align-items: center;
@@ -176,6 +220,41 @@
             text-transform: uppercase;
         }
 
+        /* 分享弹窗 */
+        .share-modal {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.85);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 100;
+        }
+        .share-content {
+            background: #1a1a1a;
+            padding: 28px 24px;
+            border-radius: 16px;
+            width: min(92%, 380px);
+            text-align: center;
+            color: white;
+        }
+        .share-content h3 {
+            margin-bottom: 16px;
+            font-size: 18px;
+        }
+        .share-link {
+            background: #333;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 13px;
+            word-break: break-all;
+            margin: 16px 0;
+            text-align: left;
+        }
+        .qr-container {
+            margin: 20px 0;
+        }
+
         .not-found {
             display: flex;
             flex-direction: column;
@@ -186,9 +265,7 @@
             padding: 24px;
             text-align: center;
         }
-
         .not-found h2 { font-size: 22px; font-weight: 700; }
-
         .not-found a {
             color: var(--soft-white);
             font-size: 13px;
@@ -199,142 +276,209 @@
             from { opacity: 0; transform: translateY(18px) scale(0.98); }
             to { opacity: 1; transform: translateY(0) scale(1); }
         }
-
         @keyframes markPulse {
             0%, 100% { transform: scale(1); }
             50% { transform: scale(1.035); }
         }
-
-        @media (prefers-reduced-motion: reduce) {
-            *, *::before, *::after {
-                animation-duration: 1ms !important;
-                animation-iteration-count: 1 !important;
-                scroll-behavior: auto !important;
-                transition-duration: 1ms !important;
-            }
-        }
-
-        @media (max-width: 390px) {
-            main { padding-inline: 14px; }
-            .countdown-container { padding-inline: 16px; }
-            .number { font-size: clamp(32px, 10vw, 38px); }
-        }
     </style>
 </head>
 <body>
+    <a class="back-btn" href="index.html">← Back</a>
+    <div class="share-btn" id="share-btn" title="分享">↗</div>
 
-<a class="back-btn" href="index.html">← Back</a>
-
-<main>
-    <div class="not-found" id="not-found" style="display:none">
-        <h2>Comeback not found</h2>
-        <a href="index.html">← Back to list</a>
-    </div>
-
-    <section class="stage" id="stage" style="display:none" aria-label="comeback countdown">
-        <div class="album-art" aria-hidden="true">
-            <img class="logo" id="album-img" src="" alt="">
+    <main>
+        <div class="not-found" id="not-found" style="display:none">
+            <h2>Comeback not found</h2>
+            <a href="index.html">← Back to list</a>
         </div>
 
-        <div class="countdown-container">
-            <h1 class="title" id="title-el"></h1>
-            <div class="countdown" id="countdown">
-                <div class="time-block">
-                    <div class="number" id="days">00</div>
-                    <div class="label">天</div>
+        <section class="stage" id="stage" style="display:none" aria-label="comeback countdown">
+            <div class="album-art" aria-hidden="true">
+                <img class="logo" id="album-img" src="" alt="">
+            </div>
+            <div class="countdown-container">
+                <h1 class="title" id="title-el"></h1>
+                <div class="countdown" id="countdown">
+                    <div class="time-block">
+                        <div class="number" id="days">00</div>
+                        <div class="label">天</div>
+                    </div>
+                    <div class="time-block">
+                        <div class="number" id="hours">00</div>
+                        <div class="label">小时</div>
+                    </div>
+                    <div class="time-block">
+                        <div class="number" id="minutes">00</div>
+                        <div class="label">分钟</div>
+                    </div>
+                    <div class="time-block">
+                        <div class="number" id="seconds">00</div>
+                        <div class="label">秒</div>
+                    </div>
                 </div>
-                <div class="time-block">
-                    <div class="number" id="hours">00</div>
-                    <div class="label">小时</div>
-                </div>
-                <div class="time-block">
-                    <div class="number" id="minutes">00</div>
-                    <div class="label">分钟</div>
-                </div>
-                <div class="time-block">
-                    <div class="number" id="seconds">00</div>
-                    <div class="label">秒</div>
+                <div class="finished-msg" id="finished-msg" style="display:none">🎉 已回归</div>
+            </div>
+            <p class="event-note" id="event-note"></p>
+
+            <!-- 新增点赞按钮 -->
+            <div class="like-container">
+                <div class="like-btn" id="like-btn">
+                    <span class="like-icon" id="like-icon">♡</span>
+                    <span id="like-count">0</span> 已点赞
                 </div>
             </div>
-            <div class="finished-msg" id="finished-msg" style="display:none">🎉 已回归</div>
+        </section>
+    </main>
+
+    <footer>
+        <span class="signature">© AMISOI</span>
+    </footer>
+
+    <!-- 分享弹窗 -->
+    <div class="share-modal" id="share-modal">
+        <div class="share-content">
+            <h3>分享这个回归倒计时</h3>
+            <p style="margin-bottom:12px; opacity:0.8; font-size:14px;">你想吧哈哈～</p>
+            
+            <div class="share-link" id="share-link"></div>
+            
+            <div class="qr-container">
+                <canvas id="qrcode" width="180" height="180"></canvas>
+            </div>
+            
+            <button onclick="closeShareModal()" style="margin-top:16px; padding:10px 28px; background:#ff4d94; border:none; border-radius:30px; color:white; font-weight:600; cursor:pointer;">
+                关闭
+            </button>
         </div>
+    </div>
 
-        <p class="event-note" id="event-note"></p>
-    </section>
-</main>
+    <script src="https://cdn.jsdelivr.net/npm/qrcode.js@1.0.0/qrcode.min.js"></script>
+    <script>
+        const params = new URLSearchParams(location.search);
+        const id = params.get("id");
 
-<footer>
-    <span class="signature">© AMISOI</span>
-</footer>
+        // 点赞数据（可配置初始值）
+        let likeCount = 1247;        // ← 这里改成你想要的初始点赞数
+        let isLiked = false;
 
-<script>
-const params = new URLSearchParams(location.search);
-const id = params.get("id");
+        async function init() {
+            let data = [];
+            try {
+                const res = await fetch('data.json?v=' + Date.now());
+                data = await res.json();
+            } catch(e) {}
 
-async function init() {
-    let data = [];
-    try {
-        const res = await fetch('data.json?v=' + Date.now());
-        data = await res.json();
-    } catch(e) {}
+            const entry = data.find(e => e.id === id);
+            if (!entry) {
+                document.getElementById("not-found").style.display = "flex";
+                return;
+            }
 
-    const entry = data.find(e => e.id === id);
+            // Apply gradient
+            document.body.style.setProperty("--c1", entry.c1 || "#f70684");
+            document.body.style.setProperty("--c2", entry.c2 || "#c80061");
 
-    if (!entry) {
-        document.getElementById("not-found").style.display = "flex";
-        return;
-    }
+            // Fill content
+            document.getElementById("album-img").src = entry.img;
+            document.getElementById("album-img").alt = entry.group;
+            document.getElementById("title-el").innerHTML = `${entry.group}<br>${entry.comeback}`;
 
-    // Apply gradient from config
-    document.body.style.setProperty("--c1", entry.c1 || "#f70684");
-    document.body.style.setProperty("--c2", entry.c2 || "#c80061");
+            const d = new Date(entry.targetISO);
+            const dateStr = `${d.getFullYear()}.${String(d.getMonth()+1).padStart(2,'0')}.${String(d.getDate()).padStart(2,'0')} ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')} KST`;
+            document.getElementById("event-note").textContent =
+                dateStr + (entry.album ? " · " + entry.album : "");
 
-    // Fill content
-    document.getElementById("album-img").src = entry.img;
-    document.getElementById("album-img").alt = entry.group;
-    document.getElementById("title-el").innerHTML = `${entry.group}<br>${entry.comeback}`;
+            document.title = `${entry.group} Comeback Countdown · KPOP`;
+            document.getElementById("stage").style.display = "grid";
 
-    // Event note
-    const d = new Date(entry.targetISO);
-    const dateStr = `${d.getFullYear()}.${String(d.getMonth()+1).padStart(2,'0')}.${String(d.getDate()).padStart(2,'0')} ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')} KST`;
-    document.getElementById("event-note").textContent =
-        dateStr + (entry.album ? " · " + entry.album : "");
+            // 初始化点赞显示
+            updateLikeDisplay();
 
-    document.title = `${entry.group} Comeback Countdown · KPOP`;
-    document.getElementById("stage").style.display = "grid";
+            // Countdown timer
+            const target = new Date(entry.targetISO).getTime();
+            const els = {
+                days: document.getElementById("days"),
+                hours: document.getElementById("hours"),
+                minutes: document.getElementById("minutes"),
+                seconds: document.getElementById("seconds"),
+            };
 
-    // Countdown timer
-    const target = new Date(entry.targetISO).getTime();
-    const els = {
-        days: document.getElementById("days"),
-        hours: document.getElementById("hours"),
-        minutes: document.getElementById("minutes"),
-        seconds: document.getElementById("seconds"),
-    };
-
-    function fmt(v) { return String(v).padStart(2, "0"); }
-
-    function tick() {
-        const diff = target - Date.now();
-        if (diff <= 0) {
-            els.days.textContent = els.hours.textContent =
-            els.minutes.textContent = els.seconds.textContent = "00";
-            document.getElementById("countdown").style.opacity = "0.3";
-            document.getElementById("finished-msg").style.display = "block";
-            return;
+            function fmt(v) { return String(v).padStart(2, "0"); }
+            function tick() {
+                const diff = target - Date.now();
+                if (diff <= 0) {
+                    els.days.textContent = els.hours.textContent =
+                    els.minutes.textContent = els.seconds.textContent = "00";
+                    document.getElementById("countdown").style.opacity = "0.3";
+                    document.getElementById("finished-msg").style.display = "block";
+                    return;
+                }
+                const DAY = 86400000, HOUR = 3600000, MIN = 60000;
+                els.days.textContent = fmt(Math.floor(diff / DAY));
+                els.hours.textContent = fmt(Math.floor((diff % DAY) / HOUR));
+                els.minutes.textContent = fmt(Math.floor((diff % HOUR) / MIN));
+                els.seconds.textContent = fmt(Math.floor((diff % MIN) / 1000));
+            }
+            tick();
+            setInterval(tick, 1000);
         }
-        const DAY = 86400000, HOUR = 3600000, MIN = 60000;
-        els.days.textContent = fmt(Math.floor(diff / DAY));
-        els.hours.textContent = fmt(Math.floor((diff % DAY) / HOUR));
-        els.minutes.textContent = fmt(Math.floor((diff % HOUR) / MIN));
-        els.seconds.textContent = fmt(Math.floor((diff % MIN) / 1000));
-    }
 
-    tick();
-    setInterval(tick, 1000);
-}
+        // 点赞功能
+        function updateLikeDisplay() {
+            document.getElementById("like-count").textContent = likeCount;
+            const btn = document.getElementById("like-btn");
+            const icon = document.getElementById("like-icon");
+            if (isLiked) {
+                btn.classList.add("liked");
+                icon.textContent = "❤️";
+            } else {
+                btn.classList.remove("liked");
+                icon.textContent = "♡";
+            }
+        }
 
-init();
-</script>
+        document.getElementById("like-btn").addEventListener("click", () => {
+            if (!isLiked) {
+                likeCount++;
+                isLiked = true;
+                updateLikeDisplay();
+            }
+        });
+
+        // 分享功能
+        function showShareModal() {
+            const modal = document.getElementById("share-modal");
+            const linkEl = document.getElementById("share-link");
+            const currentUrl = window.location.href;
+
+            linkEl.textContent = currentUrl;
+
+            // 生成二维码
+            const canvas = document.getElementById("qrcode");
+            canvas.innerHTML = "";
+            QRCode.toCanvas(canvas, currentUrl, {
+                width: 180,
+                margin: 2,
+                color: { dark: "#ffffff", light: "#1a1a1a" }
+            }, function (error) {
+                if (error) console.error(error);
+            });
+
+            modal.style.display = "flex";
+        }
+
+        function closeShareModal() {
+            document.getElementById("share-modal").style.display = "none";
+        }
+
+        document.getElementById("share-btn").addEventListener("click", showShareModal);
+
+        // 点击弹窗背景关闭
+        document.getElementById("share-modal").addEventListener("click", function(e) {
+            if (e.target === this) closeShareModal();
+        });
+
+        init();
+    </script>
 </body>
 </html>
