@@ -91,6 +91,69 @@
             pointer-events: none;
         }
         .signature { opacity: 0.5; font-size: 12px; font-weight: 700; }
+
+        /* 美化分享弹窗 */
+        .share-modal {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.92);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 100;
+        }
+        .share-card {
+            width: 90%;
+            max-width: 380px;
+            background: rgba(40, 40, 40, 0.9);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255,255,255,0.15);
+            border-radius: 24px;
+            padding: 32px 24px;
+            text-align: center;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.5);
+        }
+        .share-card h3 { margin: 0 0 8px 0; font-size: 21px; }
+        .share-card p { margin-bottom: 20px; color: #aaa; font-size: 15px; }
+
+        .link-container {
+            background: rgba(0,0,0,0.4);
+            border-radius: 14px;
+            padding: 14px 16px;
+            display: flex;
+            align-items: center;
+            margin-bottom: 24px;
+            cursor: pointer;
+        }
+        .link-text {
+            flex: 1;
+            text-align: left;
+            font-size: 13.5px;
+            color: #ddd;
+            word-break: break-all;
+        }
+        .qr-wrapper {
+            background: #fff;
+            padding: 16px;
+            border-radius: 16px;
+            margin: 20px 0 28px;
+        }
+        .qr-wrapper img {
+            width: 200px;
+            height: 200px;
+            border-radius: 12px;
+        }
+        .close-btn {
+            background: #FEFEFE;
+            color: #1a1a1a;
+            border: none;
+            width: 100%;
+            padding: 15px;
+            border-radius: 50px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
@@ -120,20 +183,43 @@
         <span class="signature">© AMISOI</span>
     </footer>
 
+    <!-- 分享弹窗 -->
+    <div class="share-modal" id="share-modal">
+        <div class="share-card">
+            <h3>分享这个回归倒计时</h3>
+            <p>你想吧哈哈～</p>
+            
+            <div class="link-container" onclick="copyLink()">
+                <span class="link-text" id="share-link-text"></span>
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#ccc" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                    <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                </svg>
+            </div>
+
+            <div class="qr-wrapper">
+                <img src="https://raw.githubusercontent.com/Iris3329/comeback-countdown/main/assets/https___iris3329.github.io_comeback-countdown_.png" 
+                     alt="列表页二维码">
+            </div>
+
+            <button class="close-btn" onclick="closeShareModal()">关闭</button>
+        </div>
+    </div>
+
     <script>
         const WORKER_URL = "https://comeback-countdown-analytics.amisoi.workers.dev";
         const params = new URLSearchParams(location.search);
         const id = params.get("id");
         let currentGroup = "";
 
-        // 生成简单的 visitorId（持久化）
+        // 生成持久化 visitorId
         function getVisitorId() {
-            let visitorId = localStorage.getItem("visitorId");
-            if (!visitorId) {
-                visitorId = "vis_" + Math.random().toString(36).substring(2, 15) + Date.now().toString(36);
-                localStorage.setItem("visitorId", visitorId);
+            let id = localStorage.getItem("visitorId");
+            if (!id) {
+                id = "vis_" + Math.random().toString(36).substring(2, 15) + Date.now().toString(36);
+                localStorage.setItem("visitorId", id);
             }
-            return visitorId;
+            return id;
         }
 
         async function init() {
@@ -141,9 +227,7 @@
             try {
                 const res = await fetch('data.json?v=' + Date.now());
                 data = await res.json();
-            } catch(e) {
-                console.error("Failed to load data.json", e);
-            }
+            } catch(e) { console.error(e); }
 
             const entry = data.find(e => e.id === id);
             if (!entry) {
@@ -165,7 +249,7 @@
 
             document.getElementById("stage").style.display = "grid";
 
-            // 记录查看（修复后）
+            // 记录查看次数
             recordView(entry.group);
 
             // 倒计时
@@ -189,10 +273,8 @@
             setInterval(tick, 1000);
         }
 
-        // 发送查看记录到 Worker（已修复）
         async function recordView(groupName) {
             const visitorId = getVisitorId();
-
             try {
                 await fetch(`${WORKER_URL}/track`, {
                     method: "POST",
@@ -204,11 +286,39 @@
                         referrer: document.referrer || ""
                     })
                 });
-                console.log(`View recorded for group: ${groupName}`);
             } catch (e) {
-                console.log("埋点记录失败（可能是本地测试）", e);
+                console.log("埋点记录失败", e);
             }
         }
+
+        // 分享功能
+        function showShareModal() {
+            const modal = document.getElementById("share-modal");
+            const linkText = document.getElementById("share-link-text");
+            
+            const baseUrl = "https://iris3329.github.io/comeback-countdown/";
+            const friendlyUrl = `${baseUrl}?group=${encodeURIComponent(currentGroup)}`;
+            linkText.textContent = friendlyUrl;
+
+            modal.style.display = "flex";
+        }
+
+        function closeShareModal() {
+            document.getElementById("share-modal").style.display = "none";
+        }
+
+        function copyLink() {
+            const baseUrl = "https://iris3329.github.io/comeback-countdown/";
+            const friendlyUrl = `${baseUrl}?group=${encodeURIComponent(currentGroup)}`;
+            navigator.clipboard.writeText(friendlyUrl).then(() => {
+                alert("链接已复制！");
+            });
+        }
+
+        document.getElementById("share-btn").addEventListener("click", showShareModal);
+        document.getElementById("share-modal").addEventListener("click", e => {
+            if (e.target === e.currentTarget) closeShareModal();
+        });
 
         init();
     </script>
