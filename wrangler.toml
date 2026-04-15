@@ -1,6 +1,6 @@
 name = "comeback-countdown-analytics"
 main = "worker/src/index.js"
-compatibility_date = "2025-04-01"
+compatibility_date = "2025-04-15"
 
 [vars]
 ALLOWED_ORIGINS = "https://iris3329.github.io,http://localhost:8080,http://127.0.0.1:8080"
