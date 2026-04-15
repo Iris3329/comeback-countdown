@@ -126,12 +126,24 @@
         const id = params.get("id");
         let currentGroup = "";
 
+        // 生成简单的 visitorId（持久化）
+        function getVisitorId() {
+            let visitorId = localStorage.getItem("visitorId");
+            if (!visitorId) {
+                visitorId = "vis_" + Math.random().toString(36).substring(2, 15) + Date.now().toString(36);
+                localStorage.setItem("visitorId", visitorId);
+            }
+            return visitorId;
+        }
+
         async function init() {
             let data = [];
             try {
                 const res = await fetch('data.json?v=' + Date.now());
                 data = await res.json();
-            } catch(e) {}
+            } catch(e) {
+                console.error("Failed to load data.json", e);
+            }
 
             const entry = data.find(e => e.id === id);
             if (!entry) {
@@ -153,7 +165,7 @@
 
             document.getElementById("stage").style.display = "grid";
 
-            // === 重要：记录该组合被查看一次 ===
+            // 记录查看（修复后）
             recordView(entry.group);
 
             // 倒计时
@@ -177,18 +189,22 @@
             setInterval(tick, 1000);
         }
 
-        // 发送查看记录到 Worker
+        // 发送查看记录到 Worker（已修复）
         async function recordView(groupName) {
+            const visitorId = getVisitorId();
+
             try {
                 await fetch(`${WORKER_URL}/track`, {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({
-                        type: "view",
+                        visitorId: visitorId,
                         group: groupName,
-                        url: window.location.href
+                        path: window.location.pathname + window.location.search,
+                        referrer: document.referrer || ""
                     })
                 });
+                console.log(`View recorded for group: ${groupName}`);
             } catch (e) {
                 console.log("埋点记录失败（可能是本地测试）", e);
             }
