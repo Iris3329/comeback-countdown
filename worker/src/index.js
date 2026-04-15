@@ -48,41 +48,7 @@ function sanitizeText(value, maxLength) {
 
     return value.trim().slice(0, maxLength);
 }
-
-async function track(request, env) {
-    let payload;
-
-    try {
-        payload = await request.json();
-    } catch {
-        return jsonResponse(request, env, { ok: false, error: "Invalid JSON" }, 400);
-    }
-
-    const visitorId = sanitizeText(payload.visitorId, 80);
-    const path = sanitizeText(payload.path || "/", 240) || "/";
-    const referrer = sanitizeText(payload.referrer || "", 500);
-
-    if (!visitorId || !/^[a-zA-Z0-9._:-]{8,80}$/.test(visitorId)) {
-        return jsonResponse(request, env, { ok: false, error: "Invalid visitor" }, 400);
-    }
-
-    await env.DB.prepare(
-        "INSERT INTO page_views (visitor_id, path, referrer, event_date, created_at) VALUES (?, ?, ?, ?, ?)"
-    )
-        .bind(visitorId, path, referrer || null, todayKey(), Date.now())
-        .run();
-
-    return jsonResponse(request, env, { ok: true });
-}
-
 async function stats(request, env) {
-    if (env.STATS_TOKEN) {
-        const token = new URL(request.url).searchParams.get("token");
-        if (token !== env.STATS_TOKEN) {
-            return jsonResponse(request, env, { ok: false, error: "Unauthorized" }, 401);
-        }
-    }
-
     const date = todayKey();
     const [total, today, recent] = await Promise.all([
         env.DB.prepare(
@@ -110,7 +76,6 @@ async function stats(request, env) {
         recent: recent.results || []
     });
 }
-
 export default {
     async fetch(request, env) {
         const url = new URL(request.url);
