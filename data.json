@@ -405,5 +405,38 @@
     "tz": "+09:00",
     "c1": "#00BCD4",
     "c2": "#006064"
+  }，
+  {
+    "id": "1747562400003",
+    "group": "xikers",
+    "comeback": "7th Mini Album 'ROUTE ZERO : The ORA'",
+    "album": "ROUTE ZERO : The ORA",
+    "img": "https://kpopofficial.com/wp-content/uploads/2026/05/cover-xikers-Members-for-7th-Mini-Album-ROUTE-ZERO-The-ORA-788x788.webp",
+    "targetISO": "2026-05-19T18:00:00+09:00",
+    "tz": "+09:00",
+    "c1": "#CC0000",
+    "c2": "#7A0000"
+  },
+  {
+    "id": "1748300400000",
+    "group": "H//PE Princess",
+    "comeback": "1st Mini Album '17.7'",
+    "album": "17.7",
+    "img": "https://kpopofficial.com/wp-content/uploads/2026/04/cover-HIIPE-Princess-members-for-Album-17-7-788x788.webp",
+    "targetISO": "2026-05-27T18:00:00+09:00",
+    "tz": "+09:00",
+    "c1": "#7B2D8B",
+    "c2": "#4A0E5C"
+  },
+  {
+    "id": "1748473200000",
+    "group": "aespa",
+    "comeback": "Single 'LEMONADE'",
+    "album": "LEMONADE",
+    "img": "https://kpopofficial.com/wp-content/uploads/2026/03/Kpop-Comeback-Schedule-May-2026-312x208.webp",
+    "targetISO": "2026-05-29T18:00:00+09:00",
+    "tz": "+09:00",
+    "c1": "#FFE566",
+    "c2": "#E5A800"
   }
 ]
