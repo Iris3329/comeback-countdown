@@ -2,6 +2,16 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-8F2SBWPNJH"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      // 基础配置
+      gtag('config', 'G-8F2SBWPNJH');
+    </script>
+
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>KPOP Comeback Countdown</title>
     <style>
@@ -183,7 +193,6 @@
         <span class="signature">© AMISOI</span>
     </footer>
 
-    <!-- 分享弹窗 -->
     <div class="share-modal" id="share-modal">
         <div class="share-card">
             <h3>分享回归倒计时</h3>
@@ -237,6 +246,15 @@
 
             currentGroup = entry.group;
 
+            // --- GA4 自定义追踪 ---
+            // 发送组合查看事件，方便在 GA 后台直接按组合统计
+            gtag('event', 'view_item', {
+              'item_id': id,
+              'item_name': entry.group,
+              'item_category': 'Kpop Group'
+            });
+            // ---------------------
+
             document.body.style.setProperty("--c1", entry.c1 || "#f70684");
             document.body.style.setProperty("--c2", entry.c2 || "#c80061");
 
@@ -249,7 +267,7 @@
 
             document.getElementById("stage").style.display = "grid";
 
-            // 记录查看次数
+            // 记录查看次数 (原有 Worker 埋点)
             recordView(entry.group);
 
             // 倒计时
@@ -301,6 +319,13 @@
             linkText.textContent = friendlyUrl;
 
             modal.style.display = "flex";
+            
+            // GA4 追踪：记录点击分享按钮的行为
+            gtag('event', 'share', {
+              'method': 'copy_link',
+              'content_type': 'countdown_page',
+              'item_id': id
+            });
         }
 
         function closeShareModal() {
