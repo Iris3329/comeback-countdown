@@ -373,6 +373,21 @@
             animation: vesselPulse 900ms ease;
         }
 
+        .vessel-wrap::after {
+            content: "";
+            position: absolute;
+            z-index: 6;
+            left: 15%;
+            right: 15%;
+            bottom: -4px;
+            height: 16px;
+            background:
+                linear-gradient(180deg, rgba(251,251,250,0), rgba(251,251,250,0.9) 54%, rgba(251,251,250,1) 100%);
+            border-radius: 50%;
+            filter: blur(0.2px);
+            pointer-events: none;
+        }
+
         .vessel-layer {
             position: absolute;
             inset: 0;
@@ -386,18 +401,18 @@
 
         .liquid-window {
             position: absolute;
-            left: 2.6%;
-            right: 2.6%;
-            bottom: 3.1%;
+            left: 3.3%;
+            right: 3.3%;
+            bottom: 4.4%;
             z-index: 3;
-            height: calc(21.5% + (var(--level, 0) * 0.34%));
-            max-height: 55.5%;
+            height: calc(20.2% + (var(--level, 0) * 0.34%));
+            max-height: 54.2%;
             overflow: hidden;
             border-radius: 48% 48% 18px 18px / 18px 18px 18px 18px;
             opacity: calc(0.74 + (var(--level, 0) * 0.0026));
             transition: height 1100ms cubic-bezier(.32,.72,.18,1), opacity 700ms ease, filter 700ms ease;
-            -webkit-mask-image: linear-gradient(to bottom, #000 0%, #000 calc(100% - 15px), transparent 100%);
-            mask-image: linear-gradient(to bottom, #000 0%, #000 calc(100% - 15px), transparent 100%);
+            -webkit-mask-image: linear-gradient(to bottom, #000 0%, #000 calc(100% - 24px), rgba(0,0,0,0.2) calc(100% - 8px), transparent 100%);
+            mask-image: linear-gradient(to bottom, #000 0%, #000 calc(100% - 24px), rgba(0,0,0,0.2) calc(100% - 8px), transparent 100%);
         }
 
         .liquid-window.dim {
@@ -406,46 +421,75 @@
 
         .liquid-fill {
             position: absolute;
-            left: -2%;
-            bottom: -12px;
-            width: 104%;
+            left: -3.5%;
+            bottom: -20px;
+            width: 107%;
             height: auto;
+        }
+
+        .liquid-window::after {
+            content: "";
+            position: absolute;
+            z-index: 4;
+            left: 2%;
+            right: 2%;
+            bottom: -2px;
+            height: 24px;
+            border-radius: 0 0 48% 48% / 0 0 16px 16px;
+            background: linear-gradient(180deg, rgba(255,255,255,0), rgba(251,251,250,0.62) 70%, rgba(251,251,250,0.84));
+            pointer-events: none;
         }
 
         .liquid-window::before {
             content: "";
             position: absolute;
-            z-index: 2;
-            left: 7%;
-            right: 7%;
-            top: -8px;
-            height: 22px;
-            border-radius: 50%;
+            z-index: 5;
+            left: 1.4%;
+            right: 1.4%;
+            top: -1px;
+            height: 13px;
+            border-radius: 50% / 100%;
             background:
-                radial-gradient(ellipse at 50% 42%, rgba(255,255,255,0.62), rgba(255,255,255,0.24) 56%, transparent 73%),
-                linear-gradient(90deg, transparent 0%, rgba(210,207,218,0.28) 18%, rgba(255,255,255,0.62) 50%, rgba(210,207,218,0.22) 82%, transparent 100%);
-            opacity: 0.78;
+                linear-gradient(180deg, rgba(42,45,55,0.38), rgba(255,255,255,0.82) 14%, rgba(255,255,255,0.22) 54%, rgba(82,85,98,0.12) 86%, transparent 100%);
+            box-shadow:
+                inset 0 1px 1px rgba(255,255,255,0.95),
+                inset 0 -1px 0 rgba(52,55,65,0.2),
+                0 1px 1px rgba(52,55,65,0.14);
+            opacity: 0.9;
             pointer-events: none;
         }
 
         .liquid-wave {
             position: absolute;
-            left: 9%;
-            right: 9%;
-            top: -1px;
-            z-index: 3;
-            height: 18px;
-            border-radius: 50%;
-            border-top: 1px solid rgba(255,255,255,0.86);
-            border-bottom: 1px solid rgba(178,176,190,0.18);
+            left: 3.2%;
+            right: 3.2%;
+            top: 1px;
+            z-index: 6;
+            height: 22px;
+            border-radius: 50% / 100%;
+            border-top: 1px solid rgba(255,255,255,0.7);
+            border-bottom: 1px solid rgba(62,65,76,0.2);
             background:
-                repeating-linear-gradient(165deg, transparent 0 18px, rgba(255,255,255,0.24) 19px 21px, transparent 22px 38px),
-                repeating-linear-gradient(24deg, transparent 0 22px, rgba(218,215,228,0.18) 23px 25px, transparent 26px 44px);
-            opacity: 0.74;
-            transform: translateY(-52%);
+                radial-gradient(ellipse at 50% 54%, transparent 0 22%, rgba(68,71,82,0.18) 29%, transparent 35%, rgba(255,255,255,0.28) 43%, transparent 52%, rgba(92,95,108,0.12) 60%, transparent 68%),
+                repeating-linear-gradient(176deg, transparent 0 10px, rgba(255,255,255,0.34) 11px 12px, transparent 13px 24px),
+                repeating-linear-gradient(4deg, transparent 0 16px, rgba(132,135,150,0.14) 17px 18px, transparent 19px 32px);
+            opacity: 0.86;
+            transform: translateY(-14%);
             mix-blend-mode: screen;
             animation: idleWater 7.6s ease-in-out infinite;
             pointer-events: none;
+        }
+
+        .liquid-wave::before {
+            content: "";
+            position: absolute;
+            left: 0;
+            right: 0;
+            top: 4px;
+            height: 1px;
+            background: linear-gradient(90deg, rgba(76,79,91,0.16), rgba(30,33,42,0.52) 12%, rgba(24,27,36,0.58) 50%, rgba(30,33,42,0.52) 88%, rgba(76,79,91,0.16));
+            box-shadow: 0 -1px 0 rgba(255,255,255,0.72), 0 1px 1px rgba(255,255,255,0.2);
+            opacity: 0.82;
         }
 
         .vessel-wrap.ripple .liquid-wave {
@@ -1180,14 +1224,14 @@
         }
 
         @keyframes waterRipple {
-            0%, 100% { transform: translateY(-52%) scaleX(1) rotate(0deg); opacity: 0.74; }
-            38% { transform: translateY(-58%) scaleX(1.045) rotate(0.35deg); opacity: 0.9; }
-            70% { transform: translateY(-49%) scaleX(0.985) rotate(-0.22deg); opacity: 0.76; }
+            0%, 100% { transform: translateY(-14%) scaleX(1) rotate(0deg); opacity: 0.86; }
+            38% { transform: translateY(-17%) scaleX(1.018) rotate(0.12deg); opacity: 0.94; }
+            70% { transform: translateY(-12%) scaleX(0.993) rotate(-0.08deg); opacity: 0.84; }
         }
 
         @keyframes idleWater {
-            0%, 100% { transform: translateY(-52%) scaleX(1) rotate(0deg); }
-            50% { transform: translateY(-56%) scaleX(1.018) rotate(0.2deg); }
+            0%, 100% { transform: translateY(-14%) scaleX(1) rotate(0deg); }
+            50% { transform: translateY(-16%) scaleX(1.008) rotate(0.06deg); }
         }
     </style>
 </head>
@@ -1481,11 +1525,11 @@
             }
         }
 
-        function persist() {
+        function persist({ silent = false } = {}) {
             window.clearTimeout(saveTimer);
             saveTimer = window.setTimeout(() => {
                 localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-                showToast("已保存");
+                if (!silent) showToast("已保存");
             }, 160);
         }
 
@@ -1627,9 +1671,9 @@
                 const row = document.createElement("div");
                 row.className = "archive-item";
                 row.tabIndex = 0;
-                row.title = "归档记录暂不支持展开查看";
-                row.dataset.tooltip = "MVP 暂不支持查看详情";
-                row.setAttribute("aria-label", "归档记录暂不支持展开查看");
+                row.title = "历史回溯功能即将上线";
+                row.dataset.tooltip = "历史回溯功能即将上线";
+                row.setAttribute("aria-label", "历史回溯功能即将上线");
                 const title = item.finalDecision?.trim() || "未命名的决定";
                 const end = item.hasDeadline && item.endDate ? ` · ${formatDisplayDate(item.endDate)}` : "";
                 row.innerHTML = `
@@ -1755,7 +1799,7 @@
                 note: note.value
             };
             noteCount.textContent = `${note.value.length} / 240`;
-            persist();
+            persist({ silent: true });
         });
 
         finalDecision.addEventListener("input", () => {
