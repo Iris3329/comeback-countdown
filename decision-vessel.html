@@ -386,16 +386,18 @@
 
         .liquid-window {
             position: absolute;
-            left: 1.3%;
-            right: 1.3%;
-            bottom: 0.2%;
+            left: 2.6%;
+            right: 2.6%;
+            bottom: 3.1%;
             z-index: 3;
-            height: calc(24% + (var(--level, 0) * 0.34%));
-            max-height: 58%;
+            height: calc(21.5% + (var(--level, 0) * 0.34%));
+            max-height: 55.5%;
             overflow: hidden;
             border-radius: 48% 48% 18px 18px / 18px 18px 18px 18px;
             opacity: calc(0.74 + (var(--level, 0) * 0.0026));
             transition: height 1100ms cubic-bezier(.32,.72,.18,1), opacity 700ms ease, filter 700ms ease;
+            -webkit-mask-image: linear-gradient(to bottom, #000 0%, #000 calc(100% - 15px), transparent 100%);
+            mask-image: linear-gradient(to bottom, #000 0%, #000 calc(100% - 15px), transparent 100%);
         }
 
         .liquid-window.dim {
@@ -404,9 +406,9 @@
 
         .liquid-fill {
             position: absolute;
-            left: 0;
-            bottom: -1px;
-            width: 100%;
+            left: -2%;
+            bottom: -12px;
+            width: 104%;
             height: auto;
         }
 
@@ -542,6 +544,11 @@
             font: inherit;
             text-align: center;
             appearance: textfield;
+        }
+
+        .target-input.readonly {
+            color: #5f5a55;
+            cursor: default;
         }
 
         .target-input::-webkit-outer-spin-button,
@@ -873,7 +880,7 @@
         }
 
         .archive-item strong {
-            font-size: 16px;
+            font-size: 14px;
             font-weight: 500;
         }
 
@@ -1433,7 +1440,7 @@
                 startDate: toISO(today),
                 endDate: toISO(addDays(today, 27)),
                 hasDeadline: true,
-                targetDrops: 12,
+                targetDrops: 30,
                 finalDecision: "",
                 revisitDate: "",
                 archives: [],
@@ -1449,7 +1456,7 @@
                         startDate: saved.startDate,
                         endDate: saved.endDate,
                         hasDeadline: saved.hasDeadline !== false,
-                        targetDrops: Number(saved.targetDrops) || 12,
+                        targetDrops: normalizeStoredTarget(saved.targetDrops),
                         finalDecision: saved.finalDecision || "",
                         revisitDate: saved.revisitDate || "",
                         archives: saved.archives || [],
@@ -1460,6 +1467,12 @@
                 console.warn("无法读取 Decision Vessel 本地记录", error);
             }
             return createDefaultState();
+        }
+
+        function normalizeStoredTarget(value) {
+            const target = Number(value);
+            if (!Number.isFinite(target) || target <= 0 || target === 12) return 30;
+            return Math.max(1, Math.min(99, target));
         }
 
         function clampRange() {
@@ -1520,6 +1533,15 @@
             return "正在成形";
         }
 
+        function deadlineTargetDrops(daysLeft) {
+            return Math.max(1, Number(daysLeft) || 0);
+        }
+
+        function activeTargetDrops(daysLeft) {
+            if (state.hasDeadline) return deadlineTargetDrops(daysLeft);
+            return Math.max(1, Number(state.targetDrops) || 30);
+        }
+
         function notePlaceholder(stance) {
             if (stance === "clearer") return "是什么让你更确定？";
             if (stance === "observing") return "今天你还想继续观察什么？";
@@ -1534,20 +1556,24 @@
             deadlineToggle.checked = state.hasDeadline;
             endInput.disabled = !state.hasDeadline;
             endInput.closest(".date-field").classList.toggle("disabled", !state.hasDeadline);
-            targetDropsInput.value = state.targetDrops;
-            targetDropsPanelInput.value = state.targetDrops;
 
             const today = stripTime(new Date());
             const start = parseISO(state.startDate);
             const end = parseISO(state.endDate);
-            const totalDays = diffDays(start, end) + 1;
             const daysLeft = state.hasDeadline ? Math.max(diffDays(today, end), 0) : "--";
             const dates = datesInRange();
             const score = getConvictionScore(dates);
-            const target = Math.max(1, Number(state.targetDrops) || 12);
+            const target = activeTargetDrops(daysLeft);
             const level = Math.min(100, Math.round((score / target) * 100));
             const todayEntry = state.entries[currentISO()] || {};
             const isFull = score >= target;
+
+            targetDropsInput.value = target;
+            targetDropsPanelInput.value = target;
+            targetDropsInput.readOnly = state.hasDeadline;
+            targetDropsPanelInput.readOnly = state.hasDeadline;
+            targetDropsInput.classList.toggle("readonly", state.hasDeadline);
+            targetDropsPanelInput.classList.toggle("readonly", state.hasDeadline);
 
             daysLeftEl.textContent = daysLeft;
             daysLeftEl.textContent = state.hasDeadline ? daysLeft : "∞";
@@ -1645,7 +1671,9 @@
 
         function archiveCurrentVessel() {
             const dates = datesInRange();
-            const target = Math.max(1, Number(state.targetDrops) || 12);
+            const today = stripTime(new Date());
+            const daysLeft = state.hasDeadline ? Math.max(diffDays(today, parseISO(state.endDate)), 0) : "--";
+            const target = activeTargetDrops(daysLeft);
             const score = getConvictionScore(dates);
             state.archives = state.archives || [];
             state.archives.push({
@@ -1782,7 +1810,11 @@
         });
 
         function updateTargetDrops(value) {
-            const next = Math.max(1, Math.min(99, Number(value) || 12));
+            if (state.hasDeadline) {
+                render();
+                return;
+            }
+            const next = Math.max(1, Math.min(99, Number(value) || 30));
             state.targetDrops = next;
             render();
             persist();
@@ -1797,7 +1829,8 @@
         });
 
         targetDropsPanelInput.addEventListener("input", () => {
-            const value = Math.max(1, Math.min(99, Number(targetDropsPanelInput.value) || 12));
+            if (state.hasDeadline) return;
+            const value = Math.max(1, Math.min(99, Number(targetDropsPanelInput.value) || 30));
             state.targetDrops = value;
             targetDropsInput.value = value;
         });
